@@ -18,7 +18,7 @@ Invariants:
 - Human intervention must be explicitly logged.
 - Replay determinism: same spec + seed + ledger => same derived-state hash.
 
-Minimal falsifier:
+Example usage to demonstrate Minimal falsifier:
 Two agents. One turn. Two actions. Asymmetric private information plus an externality cost.
 
 Out of scope
