@@ -71,7 +71,7 @@ Rule
 - Python 3.11.
 - `pyproject.toml` is the single source of dependency truth. Use `uv` for dev and CI.
 - Use rebase-first Git workflow. No merge commits on feature branches.
-- All changes must pass `make check` (ruff + black + mypy + pytest + coverage).
+- All changes must pass `make check` (ruff check + ruff format check + mypy + pytest + coverage).
 - Use `make smoke` whenever training/eval code paths change.
 
 ---
@@ -192,7 +192,7 @@ Why JSONL:
 - [ ] Write code until all tests pass
 - [ ] "make smoke" command runs.
 - [ ] Check README updated if needed.
-- [ ] Changelog entry.
+- [ ] Changelog entry in CHANGELOG.md (repo root, 2026 best practice).
 
 ---
 
