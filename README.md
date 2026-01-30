@@ -14,17 +14,18 @@ Executable code, tests, and CLI tooling are planned but not yet implemented.
 - Ledger is append-only.
 - Coordination can only append intents to traces.
 - Execution can only append results to traces.
-- Human intervention must be explicitly logged to traces
+- Human intervention must be explicitly logged to traces.
 - Replay determinism: same spec + seed + ledger => same derived-state hash in runs.
 
 Minimal falsifier example:
 
 Two agents. One turn. Two actions. Asymmetric private information plus an externality cost.
 
-## Folder and File Structure
+## Repository Layout
 
 ```bash
 ├── AGENTS.md
+├── CHANGELOG.md
 ├── dev
 │   └── skills
 │       └── spec-writer.md
@@ -42,7 +43,7 @@ Two agents. One turn. Two actions. Asymmetric private information plus an extern
 └── traces
 ```
 
-## Planned (not yet implemented)
+## Roadmap (planned)
 
 - `src/` engine + coordination runtime
 - CLI for running scenarios and writing traces
@@ -51,7 +52,7 @@ Two agents. One turn. Two actions. Asymmetric private information plus an extern
 - Tests + CI wiring
 - Docs for configuration, policies, and evaluation
 
-## Quickstart (spec-only)
+## Getting Started (spec-only)
 
 There is no runnable code yet. To explore the design:
 
@@ -66,33 +67,14 @@ cat specs/spec.md
 
 Once code lands, this section will include install and run steps.
 
-## Repository Layout
-
-```bash
-├── dev
-│   └── skills
-│       └── spec-writer.md
-├── runs
-├── specs
-│   ├── game.yaml
-│   ├── policies.yaml
-│   └── spec.md
-├── src
-│   └── __init__.py
-├── traces
-├── AGENTS.md
-├── LICENSE
-├── Makefile
-├── pyproject.toml
-└── README.md
-
-```
-
 ## Contributing
 
 Early-stage project. If you'd like to contribute, open an issue describing the
-
 proposal and intended spec changes.
+
+## Changelog
+
+See `CHANGELOG.md`.
 
 ## License
 

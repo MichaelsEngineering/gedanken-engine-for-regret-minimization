@@ -3,6 +3,7 @@ PYTHON := python
 PKG ?= src
 TESTS ?= tests
 SMOKE_CFG ?= configs/modular_addition.yaml
+SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====
 .PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check smoke train unit integration new-test clean sync
@@ -123,4 +124,10 @@ sync:
 	git checkout main
 	git rebase origin/main
 	@git branch --merged main | grep -v "main" | xargs -r git branch -d
+	@if [ "$(SYNC_DELETE_REMOTE)" = "1" ]; then \
+		echo "Deleting merged remote branches on origin..."; \
+		git branch -r --merged origin/main | grep -vE "origin/(main|HEAD)" | sed "s|origin/||" | xargs -r -n1 git push origin --delete; \
+	else \
+		echo "Skipping remote branch deletion (set SYNC_DELETE_REMOTE=1 to enable)"; \
+	fi
 	@git remote prune origin
