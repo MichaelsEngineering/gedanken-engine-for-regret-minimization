@@ -43,6 +43,8 @@ Repository structure follows common patterns from RL experiment repos and physic
 ├── dev
 │   └── skills
 │       └── spec-writer.md
+├── docs
+│   └── ARCHITECTURE.md
 ├── LICENSE
 ├── Makefile
 ├── pyproject.toml
@@ -78,6 +80,22 @@ To understand the governing commitments and system model, start with:
 cat theory/theory.md
 cat specs/spec.md
 ```
+
+For the architectural plan, see:
+
+```bash
+cat docs/ARCHITECTURE.md
+```
+
+The architectural plan is subordinate to the spec; `specs/spec.md` remains the source of truth.
+
+## Multi-agent Workflow (planned)
+
+Coordination and ownership rules live in `AGENTS.md`. Highlights:
+
+- Max 6 concurrent lanes total (Integrator + up to 5 workers).
+- Branch naming: `feat/<lane>-<short-task>`; merge serially in the order listed in `AGENTS.md`.
+- Canonical reproduction command (once scripts exist): `./scripts/reproduce.sh canonical`.
 
 ## Implementation Notes (planned)
 

@@ -1,0 +1,36 @@
+# CODEOWNERS
+# Replace the owners below with your real GitHub users/teams.
+# See AGENTS.md for lane definitions and ownership rules.
+
+# Default owner (Integrator)
+* @MichaelsEngineering/integrator
+
+# Worker lanes
+/.gitignore @MichaelsEngineering/scaffolder
+
+/schemas/ @MichaelsEngineering/schema-validate
+/src/validate.py @MichaelsEngineering/schema-validate
+
+/src/runner.py @MichaelsEngineering/core-loop
+/src/executor.py @MichaelsEngineering/core-loop
+/src/env/ @MichaelsEngineering/core-loop
+/src/policy/ @MichaelsEngineering/core-loop
+
+/src/analyzer.py @MichaelsEngineering/analyzer
+/src/metrics/ @MichaelsEngineering/analyzer
+/src/scalarization/ @MichaelsEngineering/analyzer
+
+/bench/ @MichaelsEngineering/bench-bundle-docs
+/scripts/ @MichaelsEngineering/bench-bundle-docs
+/artifacts/ @MichaelsEngineering/bench-bundle-docs
+/docs/ @MichaelsEngineering/bench-bundle-docs
+
+# Integrator-locked shared files (override worker lanes)
+/AGENTS.md @MichaelsEngineering/integrator
+/CHANGELOG.md @MichaelsEngineering/integrator
+/Makefile @MichaelsEngineering/integrator
+/README.md @MichaelsEngineering/integrator
+/pyproject.toml @MichaelsEngineering/integrator
+/uv.lock @MichaelsEngineering/integrator
+/.github/workflows/ @MichaelsEngineering/integrator
+/docs/ARCHITECTURE.md @MichaelsEngineering/integrator

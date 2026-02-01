@@ -48,6 +48,68 @@ Out of scope
 
 ---
 
+## 2.1 Multi-Agent Execution Protocol (Max 6)
+
+Cap at 6 concurrent lanes total (Integrator + up to 5 worker lanes). If more work is needed, split into phases and merge serially.
+
+Integrator (single lane)
+
+- Merges in order, resolves conflicts, runs full checks, updates golden outputs.
+- Owns shared files listed under "Documented CODEOWNERS (Social Contract + File)."
+
+Worker lanes (5 max)
+
+- **Scaffolder**: repo layout, `.gitignore`, new directories/files only.
+- **Schema+Validate**: `schemas/**`, `src/validate.py`, manifest hashing helpers, validation tests.
+- **Core Loop**: `src/runner.py`, `src/executor.py`, `src/env/**`, `src/policy/**`, tests.
+- **Analyzer**: `src/analyzer.py`, `src/metrics/**`, `src/scalarization/**`, tests.
+- **Bench+Bundle+Docs**: `bench/**`, `scripts/**`, `artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`), golden outputs, doc polish.
+
+Merge order (serial)
+
+1. Scaffolding
+2. Schemas + validation
+3. Core execution loop
+4. Offline analysis
+5. Bench + bundle + docs
+
+---
+
+## 2.2 Documented CODEOWNERS (Social Contract + File)
+
+These patterns are documented here and mirrored in `CODEOWNERS`. Enforcement depends on repo settings.
+
+Integrator-locked shared files
+
+- `AGENTS.md`
+- `CHANGELOG.md`
+- `Makefile`
+- `README.md`
+- `pyproject.toml`
+- `uv.lock`
+- `.github/workflows/**`
+- `docs/ARCHITECTURE.md`
+
+Role ownership (documented)
+
+- Scaffolder: `.gitignore`, repo layout additions (new dirs/files only)
+- Schema+Validate: `schemas/**`, `src/validate.py`, validation tests
+- Core Loop: `src/runner.py`, `src/executor.py`, `src/env/**`, `src/policy/**`
+- Analyzer: `src/analyzer.py`, `src/metrics/**`, `src/scalarization/**`
+- Bench+Bundle+Docs: `bench/**`, `scripts/**`, `artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`)
+
+---
+
+## 2.3 Per-Agent Definition of Done
+
+- Work only in owned paths; request Integrator changes for shared files.
+- Add at least one test for new behavior or determinism checks.
+- Run targeted tests and `make check` before PR; run `make smoke` if execution paths change.
+- Do not change spec semantics unless explicitly instructed; reference spec sections in PR.
+- Record any manual interventions explicitly in trace/log outputs.
+
+---
+
 ## 3. Decision Policy (Impact, Risk, Cost)
 
 Impact
@@ -91,7 +153,7 @@ Rule
 1. Create a small feature branch
 
 ```bash
-git switch -c feat/<short-task-name>
+git switch -c feat/<lane>-<short-task-name>
 ```
 
 2. Make minimal changes with tight commits
@@ -197,11 +259,14 @@ Why JSONL:
 ## 11. PR Checklist
 
 - [ ] Focused branch and diff.
+- [ ] Ownership boundaries respected (see Documented CODEOWNERS).
+- [ ] Shared files touched only by Integrator.
 - [ ] Spec documented
 - [ ] Unit tests added/updated as specs instruct.
 - [ ] Write code until unit tests pass
 - [ ] Write code until all tests pass
 - [ ] "make smoke" command runs.
+- [ ] Canonical reproduction run when applicable (`./scripts/reproduce.sh canonical`); golden outputs updated intentionally.
 - [ ] Check README updated if needed.
 - [ ] Changelog entry in CHANGELOG.md (repo root, 2026 best practice).
 
