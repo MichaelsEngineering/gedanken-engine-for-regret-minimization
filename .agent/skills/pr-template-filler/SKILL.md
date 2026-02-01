@@ -9,10 +9,10 @@ Use this skill when the user wants a prefilled PR body from `.github/pull_reques
 
 ## Workflow (short)
 
-1. Identify the PR context (GitHub PR or local branch) and the base branch.
-2. Collect change evidence (files, diffstat, commits, tests run).
-3. Draft the PR template with concise bullets aligned to evidence.
-4. Mark checks only when confirmed; otherwise leave unchecked and note gaps.
+1) Identify the PR context (GitHub PR or local branch) and the base branch.
+2) Collect change evidence (files, diffstat, commits, tests run).
+3) Draft the PR template with concise bullets aligned to evidence.
+4) Mark checks only when confirmed; otherwise leave unchecked and note gaps.
 
 ## Step 1: Locate the template
 
@@ -38,7 +38,7 @@ Determine base (default `origin/main`) and compare:
 - `git diff --stat <base>..HEAD`
 - `git diff --name-only <base>..HEAD`
 
-You can use `dev/collect_pr_context.sh` to gather a quick bundle.
+You can use `scripts/collect_pr_context.sh` to gather a quick bundle.
 
 ## Step 3: Fill the template
 
