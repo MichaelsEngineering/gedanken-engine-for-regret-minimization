@@ -43,24 +43,20 @@ Each section must be short, testable, and written in imperative statements.
 # Spec: <Title>
 
 ## Authority model
-
 - <spec source of truth statement>
 - <ledger authority statement>
 - <replay authority statement>
 
 ## Invariants
-
 1. <invariant>
 2. <invariant>
 3. <invariant>
 
 ## API
-
 - <public function signature(s) with return types>
 - <determinism / side effects notes>
 
 ## Acceptance criteria
-
 - <make target or test name and expected result>
 - <artifact location and expected contents>
 
@@ -122,3 +118,4 @@ policies:
 ## Out of scope
 
 - Implementing runtime code, CI, or deployment unless the user asks.
+
