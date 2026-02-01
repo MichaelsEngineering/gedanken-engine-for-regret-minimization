@@ -3,13 +3,13 @@
 Authority model:
 
 - The spec is the source of truth.
-- The ledger is the ground-truth trace of what happened.
-- Derived state is computed by replaying the ledger via a pure reducer.
+- The trace is the ground-truth record of what happened.
+- Derived state is computed by replaying the trace via a pure reducer.
 - Event schema is planned to be defined in `spec/events.py` (Pydantic models). Runtime, tests, and TUI must use this schema as source of truth once implemented.
 
 Hard invariants (must be enforced by tests):
 
-1. Append-only ledger. No mutation, no delete, no in-place edits.
+1. Append-only trace. No mutation, no delete, no in-place edits.
 2. Separation of duties:
    - Coordination appends intents only.
    - Execution appends results only.
@@ -18,7 +18,7 @@ Hard invariants (must be enforced by tests):
    - Agents only receive their view: public history plus their private observations.
    - No private leakage to other agents or public panes.
 4. Replay determinism:
-   - Same spec + seed + ledger => identical derived-state hash.
+   - Same spec + seed + trace => identical derived-state hash.
 
 Reducer API (must be deterministic and side-effect free):
 
