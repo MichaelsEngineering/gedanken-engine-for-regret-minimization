@@ -4,22 +4,32 @@
 
 ## Coordination Lab
 
-## 1. Goals and Invariants
+## 1. Design Goals and System Invariants
 
-- Spec-first, replayable agent coordination.
+Design Goals
+
+- Deterministic evaluation of decision policies under identical initial conditions
+- Explicit separation of coordination (policy selection) and execution (actuation)
+- Replayable, auditable traces suitable for offline evaluation
+
+Workflow
+
 - Keep a clean, linear history with a rebase-first workflow.
 
-Invariants:
+System Invariants
 
-- Spec is the source of truth.
-- Ledger is append-only.
-- Coordination can only append intents.
-- Execution can only append results.
-- Human intervention must be explicitly logged.
-- Replay determinism: same spec + seed + ledger => same derived-state hash.
+- The specification is the sole source of truth.
+- Traces are append-only and immutable.
+- Coordination may only emit intents.
+- Execution may only emit results.
+- All human intervention is logged explicitly.
+- Deterministic replay: identical spec, seed, and trace produce identical derived-state hashes.
 
-Example usage to demonstrate Minimal falsifier:
-Two agents. One turn. Two actions. Asymmetric private information plus an externality cost.
+Minimal Counterexample Scenario:
+Two agents, one decision step, two admissible actions.
+Asymmetric private information with an externality cost.
+
+This scenario is sufficient to falsify naive agent designs that lack explicit counterfactual evaluation or regret accounting.
 
 Out of scope
 
@@ -144,6 +154,7 @@ Never do by default
 
 Spec locations:
 
+- `theory/theory.md` (theory source of truth)
 - `specs/spec.md` (authoritative spec)
 - `specs/*.yaml` (scenario/config inputs)
 

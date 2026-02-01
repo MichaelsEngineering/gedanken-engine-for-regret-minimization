@@ -5,7 +5,7 @@ Authority model:
 - The spec is the source of truth.
 - The ledger is the ground-truth trace of what happened.
 - Derived state is computed by replaying the ledger via a pure reducer.
-- Event schema is defined in `spec/events.py` (Pydantic models). Runtime, tests, and TUI must use this schema as source of truth.
+- Event schema is planned to be defined in `spec/events.py` (Pydantic models). Runtime, tests, and TUI must use this schema as source of truth once implemented.
 
 Hard invariants (must be enforced by tests):
 
@@ -32,7 +32,7 @@ Seed handling:
 - Example:
   - `TraceStarted(kind="TRACE_STARTED", trace_id, seq=0, ts, seed, spec_ref, policy_ref, prompt_ref, meta={...})`
 
-Acceptance criteria:
+Acceptance criteria (planned):
 
 - `make demo` produces `traces/demo.jsonl` and launches a replay UI.
 - `make test` enforces all invariants.
