@@ -1,29 +1,43 @@
 # Gedanken Engine for Regret Minimization
 
-Spec-first, replayable agent coordination for regret-minimizing decision systems.
+Deterministic, replayable coordination framework for regret-minimizing policies in agent-based decision systems.
 
-## Status
+## Project Status
 
-Pre-alpha / spec-only. This repository currently contains specs and placeholders.
+Pre-alpha. Specification-first repository.
 
-Executable code, tests, and CLI tooling are planned but not yet implemented.
+This repository currently contains formal specifications, invariants, and example scenarios.
+No execution engine or training runtime is implemented yet.
 
-## Goals and Invariants
+## Design Goals and System Invariants
 
-- Spec is the source of truth.
-- Ledger is append-only.
-- Coordination can only append intents to traces.
-- Execution can only append results to traces.
-- Human intervention must be explicitly logged to traces.
-- Replay determinism: same spec + seed + ledger => same derived-state hash in runs.
+### Design Goals
 
-Minimal falsifier example:
+- Deterministic evaluation of decision policies under identical initial conditions
+- Explicit separation of coordination (policy selection) and execution (actuation)
+- Replayable, auditable traces suitable for offline evaluation
 
-Two agents. One turn. Two actions. Asymmetric private information plus an externality cost.
+### System Invariants
+
+- The specification is the sole source of truth
+- Traces are append-only and immutable
+- Coordination may only emit intents
+- Execution may only emit results
+- All human intervention is logged explicitly
+- Deterministic replay: identical spec, seed, and trace produce identical derived-state hashes
+
+## Minimal Counterexample Scenario
+
+Two agents, one decision step, two admissible actions.
+Asymmetric private information with an externality cost.
+
+This scenario is sufficient to falsify naive agent designs that lack explicit counterfactual evaluation or regret accounting.
 
 ## Repository Layout
 
-```bash
+Repository structure follows common patterns from RL experiment repos and physics simulation codes, with explicit separation between theory, specifications, traces, and execution artifacts.
+
+```text
 ├── AGENTS.md
 ├── CHANGELOG.md
 ├── dev
@@ -38,29 +52,34 @@ Two agents. One turn. Two actions. Asymmetric private information plus an extern
 │   ├── game.yaml
 │   ├── policies.yaml
 │   └── spec.md
+├── theory
+│   └── theory.md
 ├── src
 │   └── __init__.py
 └── traces
 ```
 
-## Roadmap (planned)
+## Planned Capabilities
 
-- `src/` engine + coordination runtime
-- CLI for running scenarios and writing traces
-- Replayer UI (Textual)
-- Trace validation and deterministic replay tools
-- Tests + CI wiring
-- Docs for configuration, policies, and evaluation
+- Core coordination and replay engine (`src/`)
+- CLI for running scenarios and emitting traces
+- Offline replay and policy comparison tooling
+- Deterministic trace validation and hashing
+- Reference benchmarks for minimal regret scenarios
+- Tests and CI for replay determinism
 
-## Getting Started (spec-only)
+## Reading the Specification
 
-There is no runnable code yet. To explore the design:
+This repository is currently spec-first.
+
+To understand the governing commitments and system model, start with:
 
 ```bash
+cat theory/theory.md
 cat specs/spec.md
 ```
 
-## Development (planned)
+## Implementation Notes (planned)
 
 - Python >= 3.11
 - Dependencies listed in `pyproject.toml`
@@ -69,8 +88,9 @@ Once code lands, this section will include install and run steps.
 
 ## Contributing
 
-Early-stage project. If you'd like to contribute, open an issue describing the
-proposal and intended spec changes.
+Contributions are welcome at the specification and design level.
+
+Please open an issue describing the proposed change, the motivation, and the expected impact on determinism or regret evaluation.
 
 ## Changelog
 
