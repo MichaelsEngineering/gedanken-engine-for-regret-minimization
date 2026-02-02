@@ -1,0 +1,4 @@
+contract_version: "1"
+status: "PASS"
+result:
+  message: "ok"
