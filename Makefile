@@ -6,7 +6,7 @@ SMOKE_CFG ?= configs/modular_addition.yaml
 SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====
-.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check smoke train unit integration new-test clean sync
+.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate swarm smoke train unit integration new-test clean sync
 
 default: help
 
@@ -22,6 +22,8 @@ help:
 	@echo "   coverage        Run pytest with coverage reports"
 	@echo "   tdd             Lint + type + fail-fast unit tests (inner loop)"
 	@echo "   check           Lint + type + tests (pre-push)"
+	@echo "   gate            Run the agent orchestrator gate validator"
+	@echo "   swarm           Launch manager + 5 worker swarm"
 	@echo "   smoke           CPU-only smoke training run with tiny epochs"
 	@echo "   train           Example short train call (override ARGS=...)"
 	@echo "   unit            Only unit tests (mark=unit)"
@@ -35,6 +37,8 @@ init:
 
 # ==== Quality gates ====
 SRC := $(PKG) $(TESTS)
+GATE_RUN ?= runs/demo
+GATE_CMD ?= python -m scripts.swarm_gate
 
 lint:
 	@echo "Running Ruff lint..."
@@ -75,6 +79,13 @@ tdd: lint type test-fast
 
 # Pre-push: everything important
 check: lint type test coverage
+
+# Gate orchestration (placeholder)
+gate:
+	$(GATE_CMD) --run $(GATE_RUN)
+
+swarm:
+	./scripts/swarm_run.sh
 
 # ==== Training shortcuts ====
 smoke:

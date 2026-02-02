@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 dependencies = ["pydantic>=2.6", "pyyaml>=6.0", "textual>=0.58", "rich>=13.7"]
 
 [dependency-groups]
-dev = ["mypy>=1.10", "pytest>=8.2", "pytest-cov>=5.0", "ruff>=0.6"]
+dev = ["mypy>=1.10", "pytest>=8.2", "pytest-cov>=5.0", "ruff>=0.6", "types-PyYAML>=6.0"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

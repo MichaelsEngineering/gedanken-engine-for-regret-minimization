@@ -125,4 +125,4 @@ CI contract:
 ## G. Multi-agent execution protocol (max 6)
 
 See `AGENTS.md` for authoritative lane ownership, shared-file locks, branch naming, and merge order.
-Cap at 6 concurrent lanes total (Integrator + up to 5 worker lanes). If more work is needed, split into phases.
+Cap at 6 concurrent lanes total (Manager + up to 5 worker lanes). If more work is needed, split into phases.

@@ -50,9 +50,9 @@ Out of scope
 
 ## 2.1 Multi-Agent Execution Protocol (Max 6)
 
-Cap at 6 concurrent lanes total (Integrator + up to 5 worker lanes). If more work is needed, split into phases and merge serially.
+Cap at 6 concurrent lanes total (Manager + up to 5 worker lanes). If more work is needed, split into phases and merge serially.
 
-Integrator (single lane)
+Manager (single lane)
 
 - Merges in order, resolves conflicts, runs full checks, updates golden outputs.
 - Owns shared files listed under "Documented CODEOWNERS (Social Contract + File)."
@@ -79,7 +79,7 @@ Merge order (serial)
 
 These patterns are documented here and mirrored in `CODEOWNERS`. Enforcement depends on repo settings.
 
-Integrator-locked shared files
+Manager-locked shared files
 
 - `AGENTS.md`
 - `CHANGELOG.md`
@@ -102,7 +102,7 @@ Role ownership (documented)
 
 ## 2.3 Per-Agent Definition of Done
 
-- Work only in owned paths; request Integrator changes for shared files.
+- Work only in owned paths; request manager changes for shared files.
 - Add at least one test for new behavior or determinism checks.
 - Run targeted tests and `make check` before PR; run `make smoke` if execution paths change.
 - Do not change spec semantics unless explicitly instructed; reference spec sections in PR.
@@ -260,7 +260,7 @@ Why JSONL:
 
 - [ ] Focused branch and diff.
 - [ ] Ownership boundaries respected (see Documented CODEOWNERS).
-- [ ] Shared files touched only by Integrator.
+- [ ] Shared files touched only by manager.
 - [ ] Spec documented
 - [ ] Unit tests added/updated as specs instruct.
 - [ ] Write code until unit tests pass

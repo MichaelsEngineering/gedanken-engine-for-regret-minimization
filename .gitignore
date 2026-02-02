@@ -1,3 +1,8 @@
+# Runs: ignore all run artifacts but keep the demo fixture
+runs/*
+!runs/demo/
+!runs/demo/**
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
