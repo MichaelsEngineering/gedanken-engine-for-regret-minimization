@@ -4,7 +4,7 @@ This repository is a spec-first evaluation and measurement engine for comparing 
 
 ## Why this exists
 
-- Prevents invalid counterfactuals by enforcing causal closure and reset boundary conditions across alternatives (Section 2.1, Closed-System Assumption).
+- Prevents invalid counterfactuals by enforcing causal closure and reset boundary conditions across alternatives (Section 2.2, Closed-System Assumption).
 - Blocks clairvoyant baselines via comparator admissibility so regret measures decision quality instead of information advantage (Section 3.3, Best Admissible Alternative).
 - Prevents unit-mixing scale bias by requiring nondimensionalization of multi-metric regret (Section 3.2 and 5.3, Conservation of Dimensionality).
 - Stops nondeterministic replay through conservation of history so audits are reproducible (Section 5.1, Deterministic Replay).
