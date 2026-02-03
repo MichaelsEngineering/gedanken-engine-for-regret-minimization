@@ -202,6 +202,69 @@ Each milestone lists parallel lanes, required inputs, exact outputs, and Definit
   2. Golden update with justification,
   3. Decision Log entry in PLAN.md.
 
+## Feature Plan: Deterministic Replay Runner (2026-02-03)
+
+Summary: add a replay runner (CLI + library) that replays a fixed trace with a declared seed or tape, enforces step ordering and causal declaration, and streams JSONL to stdout.
+
+Scope:
+- Replay runner consumes `trace`, `seed|tape`, `env`, `policies`, `metrics`.
+- CLI: `replay --env ... --policies ... --metrics ... --trace ... --seed|--tape ... --out ... [--tee]`.
+- Library entrypoint: `run = replay.run(config) -> RunHandle`.
+- `RunHandle` includes `run_dir`, `log_bundle_sha256`, `exit_code`, `error_payload`.
+- Enforce observe -> act -> validate -> transition -> score -> log.
+
+Non-goals:
+- No analyzer outputs or regret metrics.
+- No new schema files or schema versioning changes.
+- No changes to manager-locked files.
+
+Determinism rules:
+- Strict hash match for identical spec + seed + trace.
+- All randomness must be declared via seed or tape.
+- Replay boundary tuple is immutable.
+
+Concurrency model:
+- Synchronous joint action.
+- Tie-breaking by deterministic sorted `agent_id`.
+
+Termination:
+- Stop when trace is exhausted or environment signals done.
+- If both are available, they must agree or replay fails.
+
+Interfaces:
+Environment:
+- `reset(init, rng) -> state`
+- `observe(state) -> dict[agent_id, obs]`
+- `validate_action(state, agent_id, action) -> ValidationResult`
+- `step(state, joint_action, exogenous_x_t, rng) -> (next_state, reward, cost, info)`
+Policy:
+- `act(obs, ctx) -> action`
+- `ctx` includes only `policy_id`, step index, action schema version.
+- Policies must not receive raw state.
+Metrics:
+- `per_step(t, state_hash_pre, action, reward, cost, info) -> metric_contribs`
+- `aggregate(contribs_stream) -> derived_metrics`
+- Must be re-runnable offline from logs only.
+Logger/Ledger:
+- `emit(event_obj)` append-only.
+- Enforces event ordering and schema versioning.
+
+Steps:
+1. Update `specs/spec.md` with replay semantics, boundary tuple, and interfaces.
+2. Implement replay runner library and CLI under `src/`.
+3. Add deterministic logging and log bundle hashing.
+4. Add unit tests for CLI wiring, step ordering, and determinism.
+5. Run `make check`.
+
+Tests:
+- CLI wiring tests for args and exit codes.
+- Determinism test: same inputs -> same derived-state hash.
+- Order test: verify observe -> act -> validate -> transition -> score -> log.
+
+Assumptions:
+- Trace schema exists per `specs/spec.md` and includes `TraceStarted`.
+- `--tape` resolves to a pre-recorded RNG tape referenced by `tape_ref`.
+
 ## Final Manager Checklist
 
 - All lanes completed DoD.

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
+import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -9,6 +11,9 @@ from typing import Any
 import yaml
 
 AGENT_IDS = ("agent1", "agent2", "agent3", "agent4", "agent5")
+DEFAULT_ALLOWED_TEST_COMMANDS = {("make", "check")}
+DEFAULT_TEST_TIMEOUT_S = 120
+FIXTURES_ROOT = (Path.cwd() / "traces" / "fixtures").resolve()
 
 
 @dataclass(frozen=True)
@@ -54,9 +59,158 @@ def _require_contract_version(
         )
 
 
-def validate_gate(run_dir: Path, *, contract_version: str = "1") -> GateReport:
+def _require_git_repo(errors: list[str]) -> None:
+    if not (Path.cwd() / ".git").exists():
+        errors.append("Workspace must be a git repo with a .git directory.")
+
+
+def _require_diff_evidence(
+    out_data: dict[str, Any], path: Path, errors: list[str]
+) -> None:
+    result = out_data.get("result")
+    if not isinstance(result, dict):
+        errors.append(f"{path}: result must be a mapping.")
+        return
+    diff_patch = result.get("diff_patch")
+    diff_name_status = result.get("diff_name_status")
+    if not isinstance(diff_patch, str) or not diff_patch.strip():
+        errors.append(f"{path}: result.diff_patch must be a non-empty string.")
+    if not isinstance(diff_name_status, str) or not diff_name_status.strip():
+        errors.append(
+            f"{path}: result.diff_name_status must be a non-empty string."
+        )
+    test_files = result.get("test_files")
+    if not isinstance(test_files, list) or not all(
+        isinstance(item, str) and item for item in test_files
+    ):
+        errors.append(f"{path}: result.test_files must be a non-empty string list.")
+
+
+def _hash_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _resolve_fixture_path(path_value: str, errors: list[str]) -> Path | None:
+    fixture_path = Path(path_value)
+    resolved = (
+        fixture_path.resolve()
+        if fixture_path.is_absolute()
+        else (Path.cwd() / fixture_path).resolve()
+    )
+    try:
+        resolved.relative_to(FIXTURES_ROOT)
+    except ValueError:
+        errors.append(
+            "manager_verdict.yaml: fixtures[*].path must live under traces/fixtures/."
+        )
+        return None
+    return resolved
+
+
+def _require_fixtures(verdict_data: dict[str, Any], errors: list[str]) -> None:
+    fixtures = verdict_data.get("fixtures")
+    if fixtures is None:
+        return
+    if not isinstance(fixtures, list):
+        errors.append("manager_verdict.yaml: fixtures must be a list.")
+        return
+    for index, item in enumerate(fixtures):
+        if not isinstance(item, dict):
+            errors.append(
+                f"manager_verdict.yaml: fixtures[{index}] must be a mapping."
+            )
+            continue
+        path_value = item.get("path")
+        sha_value = item.get("sha256")
+        if not isinstance(path_value, str) or not path_value:
+            errors.append(
+                f"manager_verdict.yaml: fixtures[{index}].path must be a string."
+            )
+            continue
+        if not isinstance(sha_value, str) or not sha_value:
+            errors.append(
+                f"manager_verdict.yaml: fixtures[{index}].sha256 must be a string."
+            )
+            continue
+        fixture_path = _resolve_fixture_path(path_value, errors)
+        if fixture_path is None:
+            continue
+        if not fixture_path.exists():
+            errors.append(
+                f"manager_verdict.yaml: fixture not found at {fixture_path}"
+            )
+            continue
+        actual = _hash_file(fixture_path)
+        if actual != sha_value:
+            errors.append(
+                f"manager_verdict.yaml: fixture hash mismatch for {fixture_path}"
+            )
+
+
+def _require_test_results(
+    verdict_data: dict[str, Any], errors: list[str]
+) -> tuple[list[str], int] | None:
+    tests = verdict_data.get("tests")
+    if not isinstance(tests, dict):
+        errors.append("manager_verdict.yaml: tests must be a mapping.")
+        return None
+    command = tests.get("command")
+    exit_code = tests.get("exit_code")
+    summary = tests.get("summary")
+    if not isinstance(command, list) or not all(
+        isinstance(item, str) and item for item in command
+    ):
+        errors.append("manager_verdict.yaml: tests.command must be a list of strings.")
+        return None
+    if not isinstance(exit_code, int):
+        errors.append("manager_verdict.yaml: tests.exit_code must be an int.")
+        return None
+    if not isinstance(summary, list) or not all(
+        isinstance(item, str) and item for item in summary
+    ):
+        errors.append("manager_verdict.yaml: tests.summary must be a list of strings.")
+        return None
+    return command, exit_code
+
+
+def _run_tests(
+    command: list[str], errors: list[str], *, timeout_s: int
+) -> None:
+    try:
+        result = subprocess.run(
+            command,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=timeout_s,
+        )
+    except subprocess.TimeoutExpired:
+        errors.append(f"Test command timed out after {timeout_s}s.")
+        return
+    except FileNotFoundError:
+        errors.append(f"Test command not found: {command[0]}")
+        return
+    if result.returncode != 0:
+        errors.append(
+            f"Test command failed with exit code {result.returncode}."
+        )
+
+
+def validate_gate(
+    run_dir: Path,
+    *,
+    contract_version: str = "1",
+    allowed_test_commands: set[tuple[str, ...]] | None = None,
+    run_tests: bool = True,
+    test_timeout_s: int = DEFAULT_TEST_TIMEOUT_S,
+) -> GateReport:
     errors: list[str] = []
     per_agent: dict[str, AgentResult] = {}
+    _require_git_repo(errors)
 
     tasks_path = run_dir / "manager_tasks.yaml"
     tasks_data = _load_yaml_or_error(tasks_path, errors)
@@ -102,6 +256,25 @@ def validate_gate(run_dir: Path, *, contract_version: str = "1") -> GateReport:
         verdict_value = verdict_data.get("verdict")
         if verdict_value not in {"PASS", "FAIL"}:
             errors.append(f"{verdict_path}: verdict must be PASS or FAIL.")
+        test_command = _require_test_results(verdict_data, errors)
+        if test_command is not None:
+            command, exit_code = test_command
+            allowed = (
+                allowed_test_commands
+                if allowed_test_commands is not None
+                else DEFAULT_ALLOWED_TEST_COMMANDS
+            )
+            if tuple(command) not in allowed:
+                errors.append(
+                    f"{verdict_path}: tests.command is not in the allowlist."
+                )
+            if exit_code != 0:
+                errors.append(
+                    f"{verdict_path}: tests.exit_code must be 0 for PASS."
+                )
+            if run_tests and tuple(command) in allowed:
+                _run_tests(command, errors, timeout_s=test_timeout_s)
+        _require_fixtures(verdict_data, errors)
         per_agent_map = verdict_data.get("per_agent")
         if not isinstance(per_agent_map, dict):
             errors.append(f"{verdict_path}: per_agent must be a mapping.")
@@ -133,6 +306,8 @@ def validate_gate(run_dir: Path, *, contract_version: str = "1") -> GateReport:
                 agent_errors.append(
                     f"{out_path}: must include exactly one of result or error."
                 )
+            if has_result:
+                _require_diff_evidence(out_data, out_path, agent_errors)
         per_agent[agent_id] = AgentResult(
             status=status_value if not agent_errors else "FAIL",
             errors=agent_errors,

@@ -40,7 +40,12 @@ pids=()
 
 (
   set -o pipefail
-  codex exec --json "${MANAGER_PROMPT}" 2>&1 \
+  codex exec \
+    --json \
+    --cd "${REPO_ROOT}" \
+    --full-auto \
+    --sandbox workspace-write \
+    "${MANAGER_PROMPT}" 2>&1 \
     | tee "${REPO_ROOT}/runs/run-${RUN_ID}-manager.jsonl" \
     | python "${REPO_ROOT}/scripts/swarm_pretty.py" --lane manager > "${TTY_OUT}"
 ) &
@@ -50,7 +55,12 @@ for i in 1 2 3 4 5; do
   agent_prompt=$(printf "${AGENT_PROMPT_TEMPLATE}" "${i}" "${i}" "${i}")
   (
     set -o pipefail
-    codex exec --json "${agent_prompt}" 2>&1 \
+    codex exec \
+      --json \
+      --cd "${REPO_ROOT}" \
+      --full-auto \
+      --sandbox workspace-write \
+      "${agent_prompt}" 2>&1 \
       | tee "${REPO_ROOT}/runs/run-${RUN_ID}-agent${i}.jsonl" \
       | python "${REPO_ROOT}/scripts/swarm_pretty.py" --lane "agent${i}" > "${TTY_OUT}"
   ) &
