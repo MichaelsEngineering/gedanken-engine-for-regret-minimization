@@ -16,17 +16,17 @@ This repository is a spec-first evaluation and measurement engine for comparing 
 
 ## Concepts translated
 
-|          Theory term          | Engineering interpretation                                                              |
-| :---------------------------: | --------------------------------------------------------------------------------------- |
-|             $$s$$             | Boundary conditions: frozen workload trace, resettable environment state, and RNG seed. |
-|             $$a$$             | Candidate designs or policies under evaluation.                                         |
-|            $$M_i$$            | Measured metrics from replay, such as latency, throughput, energy, error rate.          |
-|            $$C_i$$            | Normalization scales used to make each metric dimensionless before aggregation.         |
-|          $$A_{adm}$$          | Admissible baselines that do not use hidden state or future RNG outcomes.               |
-|           $$I(h)$$            | Observable information available at decision time.                                      |
-|        $$\\{regret\\}$$         | Decision-quality delta relative to the best admissible alternative.                     |
-|    $$\\{causal closure\\}$$     | Identical boundary conditions under replay for all alternatives.                        |
-| $$\\{nondimensionalization\\}$$ | Unit-consistent aggregation of metrics into a dimensionless regret scalar.              |
+|        Theory term        | Engineering interpretation                                                              |
+| :-----------------------: | --------------------------------------------------------------------------------------- |
+|           $$s$$           | Boundary conditions: frozen workload trace, resettable environment state, and RNG seed. |
+|           $$a$$           | Candidate designs or policies under evaluation.                                         |
+|          $$M_i$$          | Measured metrics from replay, such as latency, throughput, energy, error rate.          |
+|          $$C_i$$          | Normalization scales used to make each metric dimensionless before aggregation.         |
+|        $$A_{adm}$$        | Admissible baselines that do not use hidden state or future RNG outcomes.               |
+|         $$I(h)$$          | Observable information available at decision time.                                      |
+|        $$regret$$         | Decision-quality delta relative to the best admissible alternative.                     |
+|    $$causal closure$$     | Identical boundary conditions under replay for all alternatives.                        |
+| $$nondimensionalization$$ | Unit-consistent aggregation of metrics into a dimensionless regret scalar.              |
 
 ## Correctness invariants (what we hard-fail on)
 
