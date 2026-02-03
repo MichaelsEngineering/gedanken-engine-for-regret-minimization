@@ -1,3 +1,0 @@
-policies:
-  - name: deterministic_first_valid
-    description: Select first valid intent proposal in event order.
