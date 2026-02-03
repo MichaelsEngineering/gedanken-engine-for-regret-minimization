@@ -24,9 +24,9 @@ This repository is a spec-first evaluation and measurement engine for comparing 
 |            $$C_i$$            | Normalization scales used to make each metric dimensionless before aggregation.         |
 |          $$A_{adm}$$          | Admissible baselines that do not use hidden state or future RNG outcomes.               |
 |           $$I(h)$$            | Observable information available at decision time.                                      |
-|        $$\\{regret}$$         | Decision-quality delta relative to the best admissible alternative.                     |
-|    $$\\{causal closure}$$     | Identical boundary conditions under replay for all alternatives.                        |
-| $$\\{nondimensionalization}$$ | Unit-consistent aggregation of metrics into a dimensionless regret scalar.              |
+|        $$\\{regret\\}$$         | Decision-quality delta relative to the best admissible alternative.                     |
+|    $$\\{causal closure\\}$$     | Identical boundary conditions under replay for all alternatives.                        |
+| $$\\{nondimensionalization\\}$$ | Unit-consistent aggregation of metrics into a dimensionless regret scalar.              |
 
 ## Correctness invariants (what we hard-fail on)
 
