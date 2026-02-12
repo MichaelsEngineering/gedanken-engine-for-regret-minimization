@@ -106,7 +106,7 @@ Expected outputs at a high level:
 - `make swarm` writes `runs/run-<id>-manager.jsonl`, `runs/run-<id>-agent*.jsonl`, and `runs/run-<id>-swarm.jsonl`.
 - Gate-ready runs live in `runs/<id>/` with `manager_tasks.yaml`, `manager_verdict.yaml`, and `agent*/out.yaml`.
 - `make replay` writes replay events to `runs/<id>/events.jsonl`.
-- TODO: `make analyze` emits a regret report at `runs/<id>/report.json`.
+- `make analyze` emits a regret report at `runs/<id>/report.json`.
 
 ## Verification checklist (definition of correctness)
 

@@ -263,7 +263,7 @@ def _code_surface_for(token: str) -> str:
         return "`traces/*.jsonl`, `tests/test_swarm_gate.py`"
     if "dimension" in key or "regret" in key:
         return (
-            "`src/analyzer.py`, `src/scalarization/__init__.py`, "
+            "`src/validation_engine.py`, `src/scalarization/__init__.py`, "
             "`tests/test_analyzer_stub.py`"
         )
     if "oracle" in key or "admiss" in key:

@@ -12,7 +12,7 @@
 | --- | --- | --- | --- |
 | `inv_conservation_history` | `SPEC-001` | `test_gate_replay_identity` | `src/runner.py`, `tests/test_runner.py` |
 | `inv_conservation_trace` | `SPEC-002` | `test_gate_trace_invariance` | `traces/*.jsonl`, `tests/test_swarm_gate.py` |
-| `inv_conservation_dimensionality` | `SPEC-003` | `test_gate_dimensionless_regret` | `src/analyzer.py`, `src/scalarization/__init__.py`, `tests/test_analyzer_stub.py` |
+| `inv_conservation_dimensionality` | `SPEC-003` | `test_gate_dimensionless_regret` | `src/validation_engine.py`, `src/scalarization/__init__.py`, `tests/test_analyzer_stub.py` |
 | `inv_offline_isolation` | `SPEC-004` | `test_gate_oracle_violation_hard_fail` | `src/validate.py`, `tests/test_validate.py` |
 | `inv_admissibility` | `SPEC-005` | `test_gate_asymmetric_externality_counterexample` | `src/`, `tests/` |
 
@@ -179,7 +179,7 @@ rollback_plan: Remove derived run artifacts for the slice and replay from last g
 - Predicate: Aggregated regret is defined only when all components are dimensionless.
 - Test name: `test_gate_dimensionless_regret`
 - Pass condition: all r_i are dimensionless before aggregation
-- Minimal code surface: `src/analyzer.py`, `src/scalarization/__init__.py`, `tests/test_analyzer_stub.py`
+- Minimal code surface: `src/validation_engine.py`, `src/scalarization/__init__.py`, `tests/test_analyzer_stub.py`
 
 #### SPEC-004
 - Owner lane: `agent4`

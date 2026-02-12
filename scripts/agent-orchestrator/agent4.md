@@ -1,11 +1,17 @@
 # Agent 4 Task Spec: Analyzer
 
 ## Authority
-- Analyzer outputs are out of scope for this request.
+- Analyzer outputs are in scope when assigned SPEC-003 (`inv_conservation_dimensionality`).
 
 ## Scope
-- Allowed files: `src/analyzer.py`, `src/metrics/**`, `src/scalarization/**`, `tests/**`.
-- Add a minimal unit test that asserts analyzer modules are importable and deterministic stubs do not mutate state.
+- Allowed files: `src/validation_engine.py`, `src/metrics/**`, `src/scalarization/**`, `tests/**`.
+- Enforce explicit `C_i(s)` normalization, dimensionless `r_i`, and dimensionless aggregate regret.
+- Enforce unit-change invariance for time units (`ms` vs `s`) as a hard-fail gate.
+- Add/maintain tests that verify:
+  - dimensionless regret gate behavior,
+  - `scale_c_i > 0` validation,
+  - nonnegative weights,
+  - invariance pass/fail paths.
 - Stage changes and produce git diff evidence.
 - Write output to `runs/<run_id>/agent4/out.yaml`.
 
