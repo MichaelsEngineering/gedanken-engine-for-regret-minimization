@@ -40,27 +40,27 @@ src/
 
 runs/
 
-- Immutable records of executed demo runs.
+- Immutable records of executed canonical runs.
 - Each run captures the exact (plan, specs, seed, trace) tuple used.
 - Serves as the primary audit surface for reproducibility and review.
 
 traces/
 
 - Current state: committed fixture traces in `traces/fixtures/*.jsonl` plus `traces/fixtures/manifest.sha256`.
-- Planned state: broader trace datasets (`demo`, `golden`, `evals`) as the offline analyzer pipeline is implemented.
+- Planned state: broader trace datasets (`canonical`, `golden`, `evals`) as the offline analyzer pipeline is implemented.
 - Invariance rule: workload traces are frozen across alternatives unless explicitly modeled inside the system.
 
-## Executable demo: regret minimization as a thought experiment
+## Executable workflow: regret minimization as a thought experiment
 
 This repository is intended to be reviewed as an executable thought experiment.
 
-Demo contract:
+Workflow contract:
 
 - Input: `theory/theory.pdf`
 - Assumptions: frozen workload trace, fixed seed, fixed spec
 - Output: regret metrics computed against admissible baselines under identical boundary conditions
 
-Typical demo flow:
+Typical workflow:
 
 1. Read `theory/theory.pdf` to identify explicit invariants and admissibility constraints.
 2. Inspect `plans/` to see how the swarm decomposed the theory into owned tasks.
@@ -81,32 +81,32 @@ This repo demonstrates:
 
 ## How to run (engineering quick start)
 
-Prereqs: Python 3.11, `uv`, and `codex` on PATH for swarm runs.
+Prereqs: Python 3.11 and `codex` on PATH for swarm runs.
 
 ```bash
-uv sync --dev
+make init
 make gate
 ```
 
 Optional swarm run that produces JSONL logs:
 
 ```bash
-RUN_ID=1 make swarm
+make swarm RUN_ID=1
 ```
 
-TODO placeholder for the core evaluation engine (intentionally not implemented yet):
+Core evaluation engine command:
 
 ```bash
-# TODO: uv run rc --env <module:callable> --policies <module:callable> --metrics <module:callable> --trace traces/fixtures/<trace>.jsonl --seed <n> --out runs/<run_id> --tee
+make replay RUN_ID=<id> TRACE=traces/fixtures/<trace>.jsonl SEED=<n>
 ```
 
 Expected outputs at a high level:
 
-- `make gate` reads `runs/demo/` and prints a JSON gate report with PASS or FAIL.
+- `make gate` reads `runs/1/` and prints a JSON gate report with PASS or FAIL.
 - `make swarm` writes `runs/run-<id>-manager.jsonl`, `runs/run-<id>-agent*.jsonl`, and `runs/run-<id>-swarm.jsonl`.
 - Gate-ready runs live in `runs/<id>/` with `manager_tasks.yaml`, `manager_verdict.yaml`, and `agent*/out.yaml`.
-- `uv run rc ... --tee` writes replay events to `runs/<id>/events.jsonl`.
-- TODO: the offline analyzer will emit a regret report at `runs/<id>/report.json`.
+- `make replay` writes replay events to `runs/<id>/events.jsonl`.
+- TODO: `make analyze` emits a regret report at `runs/<id>/report.json`.
 
 ## Verification checklist (definition of correctness)
 

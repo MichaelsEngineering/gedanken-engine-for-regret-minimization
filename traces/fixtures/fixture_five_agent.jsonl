@@ -1,0 +1,12 @@
+{"kind":"TRACE_STARTED","trace_id":"fixture_five_agent","seq":0,"ts":"2026-01-03T00:00:00Z","seed":7,"spec_ref":"plans/PLAN.md","policy_ref":"policies/five_agent","prompt_ref":"prompts/five_agent","meta":{"note":"five-agent"}}
+{"kind":"INTENT_EMITTED","trace_id":"fixture_five_agent","seq":1,"ts":"2026-01-03T00:00:01Z","agent_id":"agent1","action":{"type":"MOVE","dir":"LEFT"},"meta":{"source":"coordination"}}
+{"kind":"INTENT_EMITTED","trace_id":"fixture_five_agent","seq":2,"ts":"2026-01-03T00:00:02Z","agent_id":"agent2","action":{"type":"MOVE","dir":"RIGHT"},"meta":{"source":"coordination"}}
+{"kind":"INTENT_EMITTED","trace_id":"fixture_five_agent","seq":3,"ts":"2026-01-03T00:00:03Z","agent_id":"agent3","action":{"type":"WAIT"},"meta":{"source":"coordination"}}
+{"kind":"INTENT_EMITTED","trace_id":"fixture_five_agent","seq":4,"ts":"2026-01-03T00:00:04Z","agent_id":"agent4","action":{"type":"SCAN"},"meta":{"source":"coordination"}}
+{"kind":"INTENT_EMITTED","trace_id":"fixture_five_agent","seq":5,"ts":"2026-01-03T00:00:05Z","agent_id":"agent5","action":{"type":"MOVE","dir":"UP"},"meta":{"source":"coordination"}}
+{"kind":"RESULT_EMITTED","trace_id":"fixture_five_agent","seq":6,"ts":"2026-01-03T00:00:06Z","agent_id":"agent1","result":{"status":"OK"},"meta":{"source":"execution"}}
+{"kind":"RESULT_EMITTED","trace_id":"fixture_five_agent","seq":7,"ts":"2026-01-03T00:00:07Z","agent_id":"agent2","result":{"status":"OK"},"meta":{"source":"execution"}}
+{"kind":"RESULT_EMITTED","trace_id":"fixture_five_agent","seq":8,"ts":"2026-01-03T00:00:08Z","agent_id":"agent3","result":{"status":"OK"},"meta":{"source":"execution"}}
+{"kind":"RESULT_EMITTED","trace_id":"fixture_five_agent","seq":9,"ts":"2026-01-03T00:00:09Z","agent_id":"agent4","result":{"status":"OK"},"meta":{"source":"execution"}}
+{"kind":"RESULT_EMITTED","trace_id":"fixture_five_agent","seq":10,"ts":"2026-01-03T00:00:10Z","agent_id":"agent5","result":{"status":"OK"},"meta":{"source":"execution"}}
+{"kind":"TRACE_ENDED","trace_id":"fixture_five_agent","seq":11,"ts":"2026-01-03T00:00:11Z","meta":{"reason":"eof"}}

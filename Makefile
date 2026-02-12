@@ -6,7 +6,7 @@ SMOKE_CFG ?= configs/modular_addition.yaml
 SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====
-.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate swarm smoke train unit integration new-test clean sync
+.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate replay swarm smoke train unit integration new-test clean sync
 
 default: help
 
@@ -23,6 +23,7 @@ help:
 	@echo "   tdd             Lint + type + fail-fast unit tests (inner loop)"
 	@echo "   check           Lint + type + tests (pre-push)"
 	@echo "   gate            Run the agent orchestrator gate validator"
+	@echo "   replay          Run deterministic replay and emit runs/<id>/events.jsonl"
 	@echo "   swarm           Launch manager + 5 worker swarm"
 	@echo "   smoke           CPU-only smoke training run with tiny epochs"
 	@echo "   train           Example short train call (override ARGS=...)"
@@ -37,8 +38,15 @@ init:
 
 # ==== Quality gates ====
 SRC := $(PKG) $(TESTS)
-GATE_RUN ?= runs/demo
+GATE_RUN ?= runs/1
 GATE_CMD ?= python -m scripts.swarm_gate
+RUN_ID ?= 1
+TRACE ?= traces/fixtures/fixture_five_agent.jsonl
+SEED ?= 7
+REPLAY_OUT ?= runs/$(RUN_ID)
+REPLAY_ENV ?= src.replay_fixtures:make_env
+REPLAY_POLICIES ?= src.replay_fixtures:make_policies
+REPLAY_METRICS ?= src.replay_fixtures:make_metrics
 
 lint:
 	@echo "Running Ruff lint..."
@@ -83,6 +91,9 @@ check: lint type test coverage
 # Gate orchestration (placeholder)
 gate:
 	$(GATE_CMD) --run $(GATE_RUN)
+
+replay:
+	uv run rc --env $(REPLAY_ENV) --policies $(REPLAY_POLICIES) --metrics $(REPLAY_METRICS) --trace $(TRACE) --seed $(SEED) --out $(REPLAY_OUT) --tee
 
 swarm:
 	./scripts/swarm_run.sh
