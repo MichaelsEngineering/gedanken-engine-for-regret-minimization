@@ -1,14 +1,41 @@
-*                 @MichaelsEngineering
-.github/**       @MichaelsEngineering
-plans/**         @MichaelsEngineering
-scripts/agent-orchestrator/** @MichaelsEngineering
-src/**           @MichaelsEngineering
-tests/**         @MichaelsEngineering
-traces/**        @MichaelsEngineering
-runs/**          @MichaelsEngineering
-dev/**           @MichaelsEngineering
-AGENTS.md        @MichaelsEngineering
-README.md        @MichaelsEngineering
-Makefile         @MichaelsEngineering
-pyproject.toml   @MichaelsEngineering
-LICENSE          @MichaelsEngineering
+# CODEOWNERS
+#
+# Canonical file location: .github/CODEOWNERS
+# Notes:
+# - Last matching rule wins.
+# - Team handles below must exist in GitHub org settings.
+
+# Default owner (manager)
+* @MichaelsEngineering/manager
+
+# Lane ownership
+/.gitignore @MichaelsEngineering/scaffolder
+
+/plans/schemas/** @MichaelsEngineering/schema-validate
+/src/validate.py @MichaelsEngineering/schema-validate
+/tests/test_validate.py @MichaelsEngineering/schema-validate
+
+/src/runner.py @MichaelsEngineering/core-loop
+/src/executor.py @MichaelsEngineering/core-loop
+/src/env/** @MichaelsEngineering/core-loop
+/src/policy/** @MichaelsEngineering/core-loop
+
+/src/analyze.py @MichaelsEngineering/analyzer
+/src/metrics/** @MichaelsEngineering/analyzer
+/src/scalarization/** @MichaelsEngineering/analyzer
+
+/bench/** @MichaelsEngineering/bench-bundle-docs
+/scripts/** @MichaelsEngineering/bench-bundle-docs
+/plans/artifacts/** @MichaelsEngineering/bench-bundle-docs
+/docs/** @MichaelsEngineering/bench-bundle-docs
+
+# Manager-locked shared files (override lane rules)
+/plans/PLAN.md @MichaelsEngineering/manager
+/AGENTS.md @MichaelsEngineering/manager
+/CHANGELOG.md @MichaelsEngineering/manager
+/Makefile @MichaelsEngineering/manager
+/README.md @MichaelsEngineering/manager
+/pyproject.toml @MichaelsEngineering/manager
+/uv.lock @MichaelsEngineering/manager
+/.github/workflows/** @MichaelsEngineering/manager
+/docs/ARCHITECTURE.md @MichaelsEngineering/manager

@@ -2,7 +2,7 @@
 PYTHON := python
 PKG ?= src
 TESTS ?= tests
-SMOKE_CFG ?= configs/modular_addition.yaml
+SMOKE_CFG ?= tests/fixtures/modular_addition.yaml
 SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====

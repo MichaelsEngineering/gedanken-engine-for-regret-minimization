@@ -9,14 +9,14 @@ from src.scripts import train
 
 def test_train_smoke_succeeds_with_config(capsys: Any) -> None:
     exit_code = train.main(
-        ["--config", "configs/modular_addition.yaml", "--epochs", "1"]
+        ["--config", "tests/fixtures/modular_addition.yaml", "--epochs", "1"]
     )
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["kind"] == "TRAIN_SMOKE"
     assert payload["status"] == "ok"
     assert payload["epochs"] == 1
-    assert payload["config_path"] == "configs/modular_addition.yaml"
+    assert payload["config_path"] == "tests/fixtures/modular_addition.yaml"
     assert isinstance(payload["config_sha256"], str)
     assert payload["config_sha256"]
 
