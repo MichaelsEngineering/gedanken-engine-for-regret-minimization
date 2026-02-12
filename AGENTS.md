@@ -266,10 +266,10 @@ Workers may edit only their assigned sections inside `plans/PLAN.md` (by INV-ID/
 ### Worker lanes (5 max, implementation-oriented)
 
 - **Scaffolder**: repo layout, `.gitignore`, new directories/files only.
-- **Schema+Validate**: `schemas/**`, `src/validate.py`, manifest hashing helpers, validation tests.
+- **Schema+Validate**: `plans/schemas/**`, `src/validate.py`, manifest hashing helpers, validation tests.
 - **Core Loop**: `src/runner.py`, `src/executor.py`, `src/env/**`, `src/policy/**`, tests. Must satisfy replay and trace invariance gates.
 - **Analyzer**: `src/analyzer.py`, `src/metrics/**`, `src/scalarization/**`, tests.
-- **Bench+Bundle+Docs**: `bench/**`, `scripts/**`, `artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`), golden outputs, doc polish.
+- **Bench+Bundle+Docs**: `bench/**`, `scripts/**`, `plans/artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`), golden outputs, doc polish.
 
 ### Merge order (phased, manager-gated)
 
@@ -301,10 +301,10 @@ These patterns are documented here and mirrored in `CODEOWNERS`. Enforcement dep
 
 - Spec Authoring (by assignment): specific `## Spec` sections inside `plans/PLAN.md` only
 - Scaffolder: `.gitignore`, repo layout additions (new dirs/files only)
-- Schema+Validate: `schemas/**`, `src/validate.py`, validation tests
+- Schema+Validate: `plans/schemas/**`, `src/validate.py`, validation tests
 - Core Loop: `src/runner.py`, `src/executor.py`, `src/env/**`, `src/policy/**`
 - Analyzer: `src/analyzer.py`, `src/metrics/**`, `src/scalarization/**`
-- Bench+Bundle+Docs: `bench/**`, `scripts/**`, `artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`)
+- Bench+Bundle+Docs: `bench/**`, `scripts/**`, `plans/artifacts/**`, `docs/**` (except `docs/ARCHITECTURE.md`)
 
 ---
 
@@ -426,20 +426,21 @@ make check
 
 - `theory/theory.pdf` (Stage 1 input only, pre-approval)
 - `plans/PLAN.md` (authoritative plan and embedded specs)
-- `specs/*.yaml` (optional derived exports for tooling only; never authoritative)
+- `scripts/agent-orchestrator/*.md` (swarm role specs used by `make swarm`)
 
-### Ledger / trace locations (default)
+### Ledger / trace locations (current default)
+
+- `traces/fixtures/*.jsonl` (committed deterministic fixture traces)
+- `traces/fixtures/manifest.sha256` (pinned fixture integrity manifest)
+- `runs/<run_id>/events.jsonl` (runtime replay output when `--tee` is used)
+- `runs/run-<id>-manager.jsonl`, `runs/run-<id>-agent*.jsonl`, `runs/run-<id>-swarm.jsonl` (swarm logs)
+
+### Planned trace locations (future-state targets, not yet default)
 
 - `traces/<trace_id>.jsonl` (ad hoc runs)
 - `traces/demo.jsonl` (README demo)
 - `traces/golden/<scenario_name>.jsonl` (committed regression traces)
 - `traces/evals/<dataset_name>/<run_name>.jsonl` (eval outputs)
-
-### Optional alternative (not default; use only when per-run artifact isolation is required)
-
-- `runs/<trace_id>/events.jsonl`
-- `runs/<trace_id>/spec_snapshot.yaml`
-- `runs/<trace_id>/report.json`
 
 ### Event schema rules
 

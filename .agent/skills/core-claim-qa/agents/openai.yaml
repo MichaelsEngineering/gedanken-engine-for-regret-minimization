@@ -1,0 +1,4 @@
+interface:
+  display_name: "Core Claim QA"
+  short_description: "Extract deterministic falsifiable core claim contracts"
+  default_prompt: "Extract one falsifiable core claim and emit deterministic contract artifacts under plans/claim/<claim_id>/, adding optional compatibility fields only when explicitly evidenced."

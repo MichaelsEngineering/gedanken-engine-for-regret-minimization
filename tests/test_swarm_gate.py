@@ -20,11 +20,11 @@ def _build_valid_run(run_dir: Path) -> None:
         {
             "contract_version": "1",
             "tasks": [
-                {"id": "agent1", "spec_path": "specs/agent-orchestrator/agent1.md"},
-                {"id": "agent2", "spec_path": "specs/agent-orchestrator/agent2.md"},
-                {"id": "agent3", "spec_path": "specs/agent-orchestrator/agent3.md"},
-                {"id": "agent4", "spec_path": "specs/agent-orchestrator/agent4.md"},
-                {"id": "agent5", "spec_path": "specs/agent-orchestrator/agent5.md"},
+                {"id": "agent1", "spec_path": "scripts/agent-orchestrator/agent1.md"},
+                {"id": "agent2", "spec_path": "scripts/agent-orchestrator/agent2.md"},
+                {"id": "agent3", "spec_path": "scripts/agent-orchestrator/agent3.md"},
+                {"id": "agent4", "spec_path": "scripts/agent-orchestrator/agent4.md"},
+                {"id": "agent5", "spec_path": "scripts/agent-orchestrator/agent5.md"},
             ],
         },
     )

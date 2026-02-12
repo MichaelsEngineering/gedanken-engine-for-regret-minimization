@@ -9,8 +9,8 @@ else
 fi
 
 # Prompts for manager and workers.
-MANAGER_PROMPT='You are the Manager. Use specs/agent-orchestrator/spec.md and agent1.md through agent5.md. Coordinate workers and write manager_tasks.yaml and manager_verdict.yaml under runs/.'
-AGENT_PROMPT_TEMPLATE='You are Agent %s. Follow specs/agent-orchestrator/agent%s.md and specs/agent-orchestrator/spec.md. Write output to runs/agent%s_out.yaml only.'
+MANAGER_PROMPT='You are the Manager. Use scripts/agent-orchestrator/spec.md and agent1.md through agent5.md. Coordinate workers and write manager_tasks.yaml and manager_verdict.yaml under runs/.'
+AGENT_PROMPT_TEMPLATE='You are Agent %s. Follow scripts/agent-orchestrator/agent%s.md and scripts/agent-orchestrator/spec.md. Write output to runs/agent%s_out.yaml only.'
 
 # Ensure required directories exist.
 mkdir -p "${REPO_ROOT}/scripts" "${REPO_ROOT}/runs"

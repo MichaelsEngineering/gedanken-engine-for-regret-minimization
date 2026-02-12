@@ -1,6 +1,7 @@
 *                 @MichaelsEngineering
 .github/**       @MichaelsEngineering
-specs/**         @MichaelsEngineering
+plans/**         @MichaelsEngineering
+scripts/agent-orchestrator/** @MichaelsEngineering
 src/**           @MichaelsEngineering
 tests/**         @MichaelsEngineering
 traces/**        @MichaelsEngineering

@@ -2,3 +2,15 @@ contract_version: "1"
 status: "PASS"
 result:
   message: "ok"
+  diff_patch: |
+    diff --git a/src/runner.py b/src/runner.py
+    index 0000000..4444444 100644
+    --- a/src/runner.py
+    +++ b/src/runner.py
+    @@ -1 +1 @@
+    -placeholder
+    +validated
+  diff_name_status: |
+    M src/runner.py
+  test_files:
+    - tests/test_runner.py

@@ -1,4 +1,4 @@
-{"kind":"TRACE_STARTED","trace_id":"fixture_two_agent","seq":0,"ts":"2026-01-02T00:00:00Z","seed":7,"spec_ref":"specs/spec.md","policy_ref":"policies/two_agent","prompt_ref":"prompts/two_agent","meta":{"note":"two-agent"}}
+{"kind":"TRACE_STARTED","trace_id":"fixture_two_agent","seq":0,"ts":"2026-01-02T00:00:00Z","seed":7,"spec_ref":"plans/PLAN.md","policy_ref":"policies/two_agent","prompt_ref":"prompts/two_agent","meta":{"note":"two-agent"}}
 {"kind":"INTENT_EMITTED","trace_id":"fixture_two_agent","seq":1,"ts":"2026-01-02T00:00:01Z","agent_id":"agent-a","action":{"type":"MOVE","dir":"LEFT"},"meta":{"source":"coordination"}}
 {"kind":"INTENT_EMITTED","trace_id":"fixture_two_agent","seq":2,"ts":"2026-01-02T00:00:02Z","agent_id":"agent-b","action":{"type":"MOVE","dir":"RIGHT"},"meta":{"source":"coordination"}}
 {"kind":"HUMAN_INTERVENTION","trace_id":"fixture_two_agent","seq":3,"ts":"2026-01-02T00:00:03Z","note":"override","meta":{"source":"human"}}

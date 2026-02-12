@@ -1,0 +1,295 @@
+claim:
+  statement: "Under fixed task context, identical boundary conditions, deterministic replay, and declared observation horizons, the evaluation specification achieves mechanically valid regret attribution relative to the best admissible alternative over heterogeneous agent swarm counterfactuals, measured by replay identity, trace invariance, dimensionless normalized regret, and oracle-violation hard-fail checks."
+  type: definition_or_spec
+  focus_constraint: definition
+  domain_goal_constraint: "specifies necessary conditions for mechanically valid regret evaluation and attribution in heterogeneous agent swarms"
+  evaluation_target_constraint: "Construct a regret-evaluation engine that provably accesses undeclared (oracle) information yet still satisfies Conservation of History, admissibility invariants, and produces correct counterfactual regret rankings under asymmetric information and externalities."
+  primary_section_id: SEC-001
+
+domain:
+  system: "heterogeneous agent swarms evaluated under deterministic replay"
+  task_context: "fixed context tau with frozen metric definitions, units, dimensions, and ordering relations"
+  boundary_condition: "complete state s including immutable workload trace, environment reset state, RNG seed state, and causal factors"
+  scope_limits:
+    - "offline measurement and attribution only"
+    - "counterfactuals defined only within one fixed task context"
+    - "learning/adaptation/policy synthesis excluded"
+
+method:
+  name: "mechanical regret evaluation and attribution specification"
+  source_sections:
+    - SEC-001
+    - SEC-002
+    - SEC-004
+    - SEC-006
+    - SEC-007
+    - SEC-009
+    - SEC-012
+    - SEC-013
+    - SEC-014
+    - SEC-016
+  mechanism:
+    - "Freeze task context tau before execution."
+    - "Require deterministic outcome map M_tau(s,a) for every admissible alternative."
+    - "Define comparator a* over admissible alternatives only."
+    - "Compute per-metric normalized regret r_i(s,a) using declared characteristic scales C_i(s)."
+    - "Aggregate only dimensionless components and abort on correctness violations."
+
+comparator:
+  name: "best admissible alternative"
+  definition: "a* = argmax_{a in A_adm} J(s,a), subject to O(a) <= O(a_eval)"
+  admissibility_rule: "a is admissible iff a = pi(I(h)) and does not use hidden/private state, future RNG outcomes, or external oracle information"
+  ordering_relation:
+    symbol: "<=_tau"
+    meaning: "task-context-specific partial order over metric vectors induced by frozen definitions"
+    checkability: "explicitly declared in spec and frozen for evaluation duration"
+
+observables:
+  - id: replay_identity
+    description: "bitwise-identical outputs under fixed (spec, seed, trace)"
+    computation: "repeat execution with identical inputs and compare derived metrics, decision sequence, and derived-state hash"
+    required_variables: [spec, seed, trace, s, M_tau, decision_sequence, derived_state_hash]
+    pass_condition: "all compared outputs are identical"
+  - id: trace_invariance
+    description: "workload trace is immutable across alternative evaluations unless deterministically modeled inside frozen system"
+    computation: "compare workload trace across alternatives from same boundary condition"
+    required_variables: [trace, s, a, a_prime]
+    pass_condition: "trace equality holds across admissible counterfactual runs"
+  - id: dimensionless_regret
+    description: "aggregate regret uses only dimensionless normalized components"
+    computation: "validate unit annotations and compute r_i(s,a) = (M_i(s,a*) - M_i(s,a)) / C_i(s)"
+    required_variables: [M_i, C_i, units_i, r_i, w_i, Regret]
+    pass_condition: "all r_i are dimensionless before aggregation"
+  - id: oracle_violation_hard_fail
+    description: "inadmissible comparator with excessive observation horizon is rejected"
+    computation: "check declared comparator observation horizon against evaluated agent horizon"
+    required_variables: [O, a_star, a_eval, I_h, A_adm]
+    pass_condition: "if O(a_star) > O(a_eval), evaluation aborts and no regret value is emitted"
+  - id: asymmetric_externality_counterexample
+    description: "minimal two-agent asymmetric-information externality scenario detects clairvoyance regret"
+    computation: "run minimal falsification scenario and compare admissible-vs-oracle comparator outcomes"
+    required_variables: [scenario_minimal, A_adm, J, Regret]
+    pass_condition: "oracle comparator path is marked invalid; admissible comparator path yields decision-regret attribution"
+
+assumptions:
+  - id: asm_fixed_context
+    statement: "Task context tau is fixed and immutable during evaluation."
+    section_id: SEC-001
+  - id: asm_causal_closure
+    statement: "System and environment are causally closed and replayable from boundary condition s."
+    section_id: SEC-004
+  - id: asm_deterministic_map
+    statement: "Outcome mapping M_tau(s,a) is deterministic for fixed inputs."
+    section_id: SEC-001
+  - id: asm_resettable_dependencies
+    statement: "External dependencies are resettable/mocked/replayable; otherwise counterfactual is undefined."
+    section_id: SEC-004
+
+invariants:
+  - id: inv_conservation_history
+    statement: "Fixed (spec, seed, trace) and complete state imply pure-function execution with identical metrics, decisions, and hash."
+    section_id: SEC-012
+    violation_effect: "hard failure"
+  - id: inv_conservation_trace
+    statement: "Workload trace is independent of evaluated alternative under frozen boundary conditions."
+    section_id: SEC-013
+    violation_effect: "hard failure"
+  - id: inv_conservation_dimensionality
+    statement: "Aggregated regret is defined only when all components are dimensionless."
+    section_id: SEC-014
+    violation_effect: "hard failure"
+  - id: inv_offline_isolation
+    statement: "Measurement and attribution occur post-execution with no online learning updates during measurement."
+    section_id: SEC-015
+    violation_effect: "hard failure"
+  - id: inv_admissibility
+    statement: "Comparator excludes hidden state and future information; observation horizon cannot exceed evaluated agent horizon."
+    section_id: SEC-009
+    violation_effect: "hard failure"
+
+artifacts:
+  - name: trace_events
+    path_pattern: "traces/*.jsonl"
+    role: "boundary-condition trace and replay evidence"
+  - name: policy_and_action_specs
+    path_pattern: "plans/PLAN.md and scripts/agent-orchestrator/**"
+    role: "declares A, admissibility constraints, observation model/horizon"
+  - name: replay_metrics
+    path_pattern: "runs/** or traces/**"
+    role: "stores replay-derived metric vectors M_i"
+  - name: characteristic_scales
+    path_pattern: "spec-defined fields"
+    role: "declares C_i(s) for normalization"
+  - name: regret_report
+    path_pattern: "offline analyzer output"
+    role: "emits regret values and validity-check status"
+
+variables:
+  - name: tau
+    type: task_context
+    domain: "frozen evaluation contract"
+    units: none
+    scope: global_per_evaluation
+    dependencies: []
+    section_id: SEC-001
+    definition: "metric set, units, dimensions, and ordering relations fixed for one evaluation"
+  - name: s
+    type: boundary_state
+    domain: "complete causal initialization"
+    units: mixed
+    scope: per_run
+    dependencies: [trace, seed, environment_state]
+    section_id: SEC-002
+    definition: "complete boundary conditions including immutable workload trace and RNG seed state"
+  - name: a
+    type: alternative
+    domain: "A"
+    units: none
+    scope: per_counterfactual
+    dependencies: [A]
+    section_id: SEC-002
+    definition: "admissible action/policy/design candidate"
+  - name: a_prime
+    type: alternative
+    domain: "A"
+    units: none
+    scope: per_counterfactual
+    dependencies: [A]
+    section_id: SEC-001
+    definition: "second alternative used for admissible comparability checks"
+  - name: A_adm
+    type: set
+    domain: "subset of A"
+    units: none
+    scope: per_context
+    dependencies: [I_h, O]
+    section_id: SEC-009
+    definition: "alternatives admissible under declared information and observation-horizon constraints"
+  - name: I_h
+    type: information_set
+    domain: "observable history projection"
+    units: none
+    scope: per_decision
+    dependencies: [h]
+    section_id: SEC-009
+    definition: "information available at decision time"
+  - name: O
+    type: observation_horizon_function
+    domain: "alternatives -> declared visibility envelope"
+    units: none
+    scope: per_alternative
+    dependencies: [alternative_spec]
+    section_id: SEC-009
+    definition: "declared horizon of variables/timesteps/signals visible to an alternative"
+  - name: M_tau
+    type: deterministic_map
+    domain: "(s,a) -> metric_vector"
+    units: mixed
+    scope: per_context
+    dependencies: [tau, s, a]
+    section_id: SEC-001
+    definition: "task-context-specific deterministic outcome map"
+  - name: M_i
+    type: metric_component
+    domain: real
+    units: "declared per metric"
+    scope: per_metric
+    dependencies: [M_tau]
+    section_id: SEC-007
+    definition: "i-th metric component in multi-metric outcome"
+  - name: C_i
+    type: characteristic_scale
+    domain: positive_real
+    units: "same as M_i"
+    scope: per_metric_per_state
+    dependencies: [s, A_adm, M_i]
+    section_id: SEC-007
+    definition: "normalization scale required for dimensionless component regret"
+  - name: r_i
+    type: normalized_component_regret
+    domain: real
+    units: dimensionless
+    scope: per_metric
+    dependencies: [M_i, C_i, a, a_star, s]
+    section_id: SEC-007
+    definition: "(M_i(s,a*) - M_i(s,a)) / C_i(s)"
+  - name: w_i
+    type: weight
+    domain: nonnegative_real
+    units: dimensionless
+    scope: per_metric
+    dependencies: [evaluation_spec]
+    section_id: SEC-007
+    definition: "scalarization coefficient for normalized component regret"
+  - name: J
+    type: scalar_objective
+    domain: real
+    units: objective_units
+    scope: per_context
+    dependencies: [s, a]
+    section_id: SEC-006
+    definition: "single-metric objective used in scalar regret comparator"
+  - name: a_star
+    type: comparator_alternative
+    domain: "A_adm"
+    units: none
+    scope: per_state
+    dependencies: [A_adm, J, O, a_eval]
+    section_id: SEC-009
+    definition: "best admissible alternative under objective and horizon constraint"
+  - name: Regret
+    type: scalar
+    domain: real
+    units: dimensionless_for_multi_metric
+    scope: per_alternative
+    dependencies: [r_i, w_i]
+    section_id: SEC-007
+    definition: "aggregate counterfactual loss relative to a_star"
+  - name: spec
+    type: artifact_input
+    domain: versioned_spec
+    units: none
+    scope: per_run
+    dependencies: []
+    section_id: SEC-012
+    definition: "frozen specification input for replay"
+  - name: seed
+    type: artifact_input
+    domain: rng_seed_state
+    units: none
+    scope: per_run
+    dependencies: []
+    section_id: SEC-012
+    definition: "deterministic random seed input"
+  - name: trace
+    type: artifact_input
+    domain: append_only_event_log
+    units: none
+    scope: per_run
+    dependencies: []
+    section_id: SEC-013
+    definition: "immutable workload trace used as boundary condition evidence"
+  - name: decision_sequence
+    type: execution_output
+    domain: ordered_actions
+    units: none
+    scope: per_run
+    dependencies: [s, a, M_tau]
+    section_id: SEC-012
+    definition: "ordered decisions emitted during execution"
+  - name: derived_state_hash
+    type: execution_output
+    domain: hash_digest
+    units: none
+    scope: per_run
+    dependencies: [execution_outputs]
+    section_id: SEC-012
+    definition: "hash of derived replay state for determinism checks"
+  - name: scenario_minimal
+    type: test_scenario
+    domain: "two agents, one step, two actions, asymmetric information, externality cost"
+    units: mixed
+    scope: falsification_fixture
+    dependencies: [A_adm, O, J]
+    section_id: SEC-018
+    definition: "minimal counterexample scenario for clairvoyance-regret detection"

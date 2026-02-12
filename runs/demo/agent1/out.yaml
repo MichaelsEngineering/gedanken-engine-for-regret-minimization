@@ -2,3 +2,15 @@ contract_version: "1"
 status: "PASS"
 result:
   message: "ok"
+  diff_patch: |
+    diff --git a/specs/agent-orchestrator/agent1.md b/specs/agent-orchestrator/agent1.md
+    index 0000000..1111111 100644
+    --- a/specs/agent-orchestrator/agent1.md
+    +++ b/specs/agent-orchestrator/agent1.md
+    @@ -1 +1 @@
+    -placeholder
+    +validated
+  diff_name_status: |
+    M specs/agent-orchestrator/agent1.md
+  test_files:
+    - tests/test_swarm_gate.py

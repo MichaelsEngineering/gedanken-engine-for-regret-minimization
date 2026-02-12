@@ -4,7 +4,7 @@
 - Follow `AGENTS.md` ownership boundaries.
 
 ## Scope
-- Allowed files: `bench/**`, `scripts/**`, `artifacts/**`, `docs/**` (excluding `docs/ARCHITECTURE.md`).
+- Allowed files: `bench/**`, `scripts/**`, `plans/artifacts/**`, `docs/**` (excluding `docs/ARCHITECTURE.md`).
 - Add or update a bench or script artifact that validates replay fixtures (e.g., hash manifest check).
 - Stage changes and produce git diff evidence.
 - Write output to `runs/<run_id>/agent5/out.yaml`.

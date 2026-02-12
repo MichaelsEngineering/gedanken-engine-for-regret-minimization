@@ -1,7 +1,7 @@
 # Spec: Agent Orchestrator Swarm Gate
 
 ## Authority model
-- Treat `specs/spec.md` as the system source of truth; this spec constrains only the orchestration gate.
+- Treat `plans/PLAN.md` as the system source of truth; this spec constrains only the orchestration gate.
 - Use YAML artifacts under `runs/<run_id>/` as the sole coordination channel for the gate.
 - Keep the contract YAML-first; until template files exist, this spec defines required fields.
 
@@ -53,7 +53,7 @@ Manager prompt (current task):
   - Require staged diffs (`git add -A`, `git diff --cached`, `git diff --cached --name-status`) and test evidence.
   - Run tests and record command, exit code, and summary lines in `manager_verdict.yaml`.
 - Responsibilities:
-  - Update manager-locked files if needed (including `specs/spec.md`, `PLAN.md`, `CHANGELOG.md`, `.github/workflows/**`).
+  - Update manager-locked files if needed (including `plans/PLAN.md`, `CHANGELOG.md`, `.github/workflows/**`).
   - Ensure CI pins `traces/fixtures/` by hash.
   - Final integration and `make check`.
 - Stop condition:
@@ -75,15 +75,15 @@ Manager task plan output:
 contract_version: "1"
 tasks:
   - id: agent1
-    spec_path: specs/agent-orchestrator/agent1.md
+    spec_path: scripts/agent-orchestrator/agent1.md
   - id: agent2
-    spec_path: specs/agent-orchestrator/agent2.md
+    spec_path: scripts/agent-orchestrator/agent2.md
   - id: agent3
-    spec_path: specs/agent-orchestrator/agent3.md
+    spec_path: scripts/agent-orchestrator/agent3.md
   - id: agent4
-    spec_path: specs/agent-orchestrator/agent4.md
+    spec_path: scripts/agent-orchestrator/agent4.md
   - id: agent5
-    spec_path: specs/agent-orchestrator/agent5.md
+    spec_path: scripts/agent-orchestrator/agent5.md
 ```
 
 Manager verdict output:

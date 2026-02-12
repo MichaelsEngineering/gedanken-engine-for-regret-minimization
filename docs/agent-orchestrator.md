@@ -30,20 +30,20 @@ Manager lane responsibilities:
 Example manager_tasks.yaml:
 
 ```yaml
-contract_version: "1"
-tasks:
+  contract_version: "1"
+  tasks:
   - id: agent1
-    spec_path: specs/agent-orchestrator/spec.md
+    spec_path: scripts/agent-orchestrator/spec.md
     metadata:
       owner: "core-loop"
   - id: agent2
-    spec_path: specs/agent-orchestrator/agent2.md
+    spec_path: scripts/agent-orchestrator/agent2.md
   - id: agent3
-    spec_path: specs/agent-orchestrator/agent3.md
+    spec_path: scripts/agent-orchestrator/agent3.md
   - id: agent4
-    spec_path: specs/agent-orchestrator/agent4.md
+    spec_path: scripts/agent-orchestrator/agent4.md
   - id: agent5
-    spec_path: specs/agent-orchestrator/agent5.md
+    spec_path: scripts/agent-orchestrator/agent5.md
 ```
 
 Task → output mapping (1:1):
