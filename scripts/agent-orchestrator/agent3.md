@@ -1,7 +1,7 @@
 # Agent 3 Task Spec: Core Loop (Replay Runner)
 
 ## Authority
-- Follow `specs/spec.md` replay semantics.
+- Follow `plans/PLAN.md` replay semantics.
 - Follow `AGENTS.md` ownership boundaries.
 
 ## Scope

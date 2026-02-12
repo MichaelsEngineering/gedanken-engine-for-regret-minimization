@@ -18,13 +18,13 @@ plans/
 
 - Manager-authored run plans for a swarm session.
 - Defines lanes, merge order, and “definition of done” gates.
+- `plans/PLAN.md` is the canonical spec after user approval.
 - The plan is the only place where cross-agent coordination is allowed, and it is treated as a versioned control artifact.
 
-specs/
+scripts/agent-orchestrator/
 
-- Machine-readable specifications derived from theory.
-- Encodes admissibility, observables, normalization scales, and comparison rules.
-- Sufficient for a tester to construct falsifying cases without reading the PDF.
+- Swarm orchestration role specs used by `make swarm` (`spec.md`, `agent1.md` ... `agent5.md`).
+- Defines manager/worker prompt contracts and per-lane scope for replayable runs.
 
 tests/
 
@@ -46,9 +46,9 @@ runs/
 
 traces/
 
-- Frozen workload traces used for counterfactual evaluation.
-- Identical across alternatives unless explicitly modeled inside the system.
-- Any divergence indicates invalid comparison or entropy injection.
+- Current state: committed fixture traces in `traces/fixtures/*.jsonl` plus `traces/fixtures/manifest.sha256`.
+- Planned state: broader trace datasets (`demo`, `golden`, `evals`) as the offline analyzer pipeline is implemented.
+- Invariance rule: workload traces are frozen across alternatives unless explicitly modeled inside the system.
 
 ## Executable demo: regret minimization as a thought experiment
 
@@ -64,7 +64,7 @@ Typical demo flow:
 
 1. Read `theory/theory.pdf` to identify explicit invariants and admissibility constraints.
 2. Inspect `plans/` to see how the swarm decomposed the theory into owned tasks.
-3. Review `specs/` to confirm that regret, normalization, and observables are fully specified.
+3. Review `plans/PLAN.md` and `scripts/agent-orchestrator/` to confirm evaluation rules and lane contracts are fully specified.
 4. Run tests to see where the theory is falsified, upheld, or shown to be underspecified.
 
 5. Inspect `src/` only after tests, to verify minimal compliance rather than feature scope.
@@ -97,7 +97,7 @@ RUN_ID=1 make swarm
 TODO placeholder for the core evaluation engine (intentionally not implemented yet):
 
 ```bash
-# TODO: python -m src.runner --spec specs/<scenario>.yaml --trace traces/<trace>.jsonl --run-id <id>
+# TODO: uv run rc --env <module:callable> --policies <module:callable> --metrics <module:callable> --trace traces/fixtures/<trace>.jsonl --seed <n> --out runs/<run_id> --tee
 ```
 
 Expected outputs at a high level:
@@ -105,6 +105,7 @@ Expected outputs at a high level:
 - `make gate` reads `runs/demo/` and prints a JSON gate report with PASS or FAIL.
 - `make swarm` writes `runs/run-<id>-manager.jsonl`, `runs/run-<id>-agent*.jsonl`, and `runs/run-<id>-swarm.jsonl`.
 - Gate-ready runs live in `runs/<id>/` with `manager_tasks.yaml`, `manager_verdict.yaml`, and `agent*/out.yaml`.
+- `uv run rc ... --tee` writes replay events to `runs/<id>/events.jsonl`.
 - TODO: the offline analyzer will emit a regret report at `runs/<id>/report.json`.
 
 ## Verification checklist (definition of correctness)

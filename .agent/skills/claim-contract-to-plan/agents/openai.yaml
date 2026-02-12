@@ -1,0 +1,5 @@
+version: 1
+interface:
+  display_name: Claim Contract to Plan
+  short_description: Build deterministic manager-loop PLAN.md from claim contract YAML
+  default_prompt: Generate plans/PLAN.md and mirror PLAN.md from this claim contract with strict validation, disjoint touched_paths work items, deterministic gates, and checkpoint artifacts.

@@ -2,3 +2,15 @@ contract_version: "1"
 status: "PASS"
 result:
   message: "ok"
+  diff_patch: |
+    diff --git a/traces/fixtures/manifest.sha256 b/traces/fixtures/manifest.sha256
+    index 0000000..5555555 100644
+    --- a/traces/fixtures/manifest.sha256
+    +++ b/traces/fixtures/manifest.sha256
+    @@ -1 +1 @@
+    -placeholder
+    +validated
+  diff_name_status: |
+    M traces/fixtures/manifest.sha256
+  test_files:
+    - tests/test_fixture_traces.py

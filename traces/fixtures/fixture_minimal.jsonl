@@ -1,4 +1,4 @@
-{"kind":"TRACE_STARTED","trace_id":"fixture_minimal","seq":0,"ts":"2026-01-01T00:00:00Z","seed":123,"spec_ref":"specs/spec.md","policy_ref":"policies/minimal","prompt_ref":"prompts/minimal","meta":{"note":"minimal"}}
+{"kind":"TRACE_STARTED","trace_id":"fixture_minimal","seq":0,"ts":"2026-01-01T00:00:00Z","seed":123,"spec_ref":"plans/PLAN.md","policy_ref":"policies/minimal","prompt_ref":"prompts/minimal","meta":{"note":"minimal"}}
 {"kind":"INTENT_EMITTED","trace_id":"fixture_minimal","seq":1,"ts":"2026-01-01T00:00:01Z","agent_id":"agent-1","action":{"type":"WAIT"},"meta":{"source":"coordination"}}
 {"kind":"RESULT_EMITTED","trace_id":"fixture_minimal","seq":2,"ts":"2026-01-01T00:00:02Z","agent_id":"agent-1","result":{"status":"OK"},"meta":{"source":"execution"}}
 {"kind":"TRACE_ENDED","trace_id":"fixture_minimal","seq":3,"ts":"2026-01-01T00:00:03Z","meta":{"reason":"eof"}}

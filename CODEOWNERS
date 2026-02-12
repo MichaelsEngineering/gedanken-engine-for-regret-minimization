@@ -26,7 +26,7 @@
 
 /bench/ @MichaelsEngineering/bench-bundle-docs
 /scripts/ @MichaelsEngineering/bench-bundle-docs
-/artifacts/ @MichaelsEngineering/bench-bundle-docs
+/plans/artifacts/ @MichaelsEngineering/bench-bundle-docs
 /docs/ @MichaelsEngineering/bench-bundle-docs
 
 # Manager-locked shared files (override worker lanes)
