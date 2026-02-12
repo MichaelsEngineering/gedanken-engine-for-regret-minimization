@@ -1,4 +1,5 @@
 claim:
+  summary: "Provide a deterministic replay runner (CLI + library) that replays a fixed trace with a declared seed or tape and produces a stable derived-state hash while streaming JSONL to stdout."
   statement: "Under fixed task context, identical boundary conditions, deterministic replay, and declared observation horizons, the evaluation specification achieves mechanically valid regret attribution relative to the best admissible alternative over heterogeneous agent swarm counterfactuals, measured by replay identity, trace invariance, dimensionless normalized regret, and oracle-violation hard-fail checks."
   type: definition_or_spec
   focus_constraint: definition
@@ -34,6 +35,18 @@ method:
     - "Define comparator a* over admissible alternatives only."
     - "Compute per-metric normalized regret r_i(s,a) using declared characteristic scales C_i(s)."
     - "Aggregate only dimensionless components and abort on correctness violations."
+
+constraints:
+  - "Python 3.11."
+  - "No new schema files under schemas/**."
+  - "Honor CODEOWNERS and manager-locked files."
+  - "Stop work at 5 minutes if not complete."
+
+acceptance:
+  - "CLI runs with declared inputs and prints JSONL replay stream to stdout."
+  - "Running the same replay twice yields the same derived-state hash."
+  - "Unit tests cover CLI wiring, deterministic replay, and step ordering."
+  - "make check passes."
 
 comparator:
   name: "best admissible alternative"
