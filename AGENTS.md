@@ -353,6 +353,14 @@ These patterns are documented here and mirrored in `CODEOWNERS`. Enforcement dep
 - Use rebase-first Git workflow. No merge commits on feature branches.
 - All changes must pass `make check` (ruff check + ruff format check + mypy + pytest + coverage).
 - Use `make smoke` whenever training/eval code paths change.
+- For direct Codex sessions outside PLAN/swarm flow, follow `## 4.1 Direct Codex Session Completion Rule (Non-Swarm)`.
+
+## 4.1 Direct Codex Session Completion Rule (Non-Swarm)
+
+- Scope: applies when Codex is working directly with the user and not executing through `plans/PLAN.md` swarm lanes.
+- For implementation changes, Codex must run `make check` before declaring completion.
+- Codex must report the exact command run and whether it passed or failed in the final response.
+- If `make check` fails or cannot be run, Codex must not mark the task complete; it must report the failure reason and propose the next fix.
 
 ---
 
@@ -536,5 +544,6 @@ make check
 - Concise. Commands always listed.
 - Reference paths.
 - Prefer small diffs.
+- For direct Codex sessions (non-swarm), completion messages must include the `make check` command result (pass/fail, or blocked with reason and next fix).
 
 ---

@@ -6,7 +6,7 @@ SMOKE_CFG ?= configs/modular_addition.yaml
 SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====
-.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate replay swarm smoke train unit integration new-test clean sync
+.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate replay analyze swarm smoke train unit integration new-test clean sync
 
 default: help
 
@@ -24,6 +24,7 @@ help:
 	@echo "   check           Lint + type + tests (pre-push)"
 	@echo "   gate            Run the agent orchestrator gate validator"
 	@echo "   replay          Run deterministic replay and emit runs/<id>/events.jsonl"
+	@echo "   analyze         Analyze runs/<id>/events.jsonl and emit runs/<id>/report.json"
 	@echo "   swarm           Launch manager + 5 worker swarm"
 	@echo "   smoke           CPU-only smoke training run with tiny epochs"
 	@echo "   train           Example short train call (override ARGS=...)"
@@ -47,6 +48,9 @@ REPLAY_OUT ?= runs/$(RUN_ID)
 REPLAY_ENV ?= src.replay_fixtures:make_env
 REPLAY_POLICIES ?= src.replay_fixtures:make_policies
 REPLAY_METRICS ?= src.replay_fixtures:make_metrics
+ANALYZE_IN ?= runs/$(RUN_ID)/events.jsonl
+ANALYZE_OUT ?= runs/$(RUN_ID)/report.json
+ANALYZE_CMD ?= $(PYTHON) -m src.analyze
 
 lint:
 	@echo "Running Ruff lint..."
@@ -94,6 +98,9 @@ gate:
 
 replay:
 	uv run rc --env $(REPLAY_ENV) --policies $(REPLAY_POLICIES) --metrics $(REPLAY_METRICS) --trace $(TRACE) --seed $(SEED) --out $(REPLAY_OUT) --tee
+
+analyze:
+	$(ANALYZE_CMD) --in $(ANALYZE_IN) --out $(ANALYZE_OUT) --run-id $(RUN_ID)
 
 swarm:
 	./scripts/swarm_run.sh
