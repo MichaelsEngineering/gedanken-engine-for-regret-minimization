@@ -73,3 +73,31 @@ def test_cli_rejects_disallowed_module(tmp_path: Path, capsys: Any) -> None:
     payload = json.loads(captured.out.strip())
     assert payload["kind"] == "ERROR"
     assert payload["error"]["type"] == "ARG_VALIDATION"
+
+
+def test_cli_wiring_runs_with_src_replay_fixtures(capsys: Any) -> None:
+    out_dir = Path("runs/test-replay-cli")
+    exit_code = replay.main(
+        [
+            "--env",
+            "src.replay_fixtures:make_env",
+            "--policies",
+            "src.replay_fixtures:make_policies",
+            "--metrics",
+            "src.replay_fixtures:make_metrics",
+            "--trace",
+            "traces/fixtures/fixture_five_agent.jsonl",
+            "--seed",
+            "7",
+            "--out",
+            str(out_dir),
+            "--tee",
+        ]
+    )
+    assert exit_code == 0
+    captured = capsys.readouterr()
+    lines = [line for line in captured.out.splitlines() if line.strip()]
+    assert lines
+    payload = json.loads(lines[0])
+    assert payload["kind"] == "STEP"
+    assert (out_dir / "events.jsonl").exists()

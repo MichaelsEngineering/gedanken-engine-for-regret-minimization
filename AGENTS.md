@@ -76,8 +76,8 @@ Plan: `plans/PLAN.md` is canonical and contains the specs used by the swarm.
 #### Step 6: Verify and record
 
 - Run: uv sync --dev; make check; make gate (or repo-equivalent)
-- Commit golden artifacts for the demo run if used (trace, report, hashes)
-- Update README sections to point to the demo path and the gate command
+- Commit golden artifacts for the canonical run if used (trace, report, hashes)
+- Update README sections to point to the canonical path and the gate command
 
 ### Swarm lane definitions and merge protocol (Codex / VS Code)
 
@@ -438,7 +438,7 @@ make check
 ### Planned trace locations (future-state targets, not yet default)
 
 - `traces/<trace_id>.jsonl` (ad hoc runs)
-- `traces/demo.jsonl` (README demo)
+- `traces/canonical.jsonl` (README canonical example)
 - `traces/golden/<scenario_name>.jsonl` (committed regression traces)
 - `traces/evals/<dataset_name>/<run_name>.jsonl` (eval outputs)
 
