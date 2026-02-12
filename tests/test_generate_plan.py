@@ -213,6 +213,9 @@ def test_output_contains_required_loop_schemas_and_paths(tmp_path: Path) -> None
 
 def test_optional_fields_are_consumed_when_present(tmp_path: Path) -> None:
     contract = _sample_contract()
+    contract["claim"]["summary"] = "Deterministic replay contract summary."
+    contract["constraints"] = ["Python 3.11", "No network IO"]
+    contract["acceptance"] = ["CLI emits JSONL", "Deterministic replay hash is stable"]
     contract["observables"][0]["test_name"] = "test_gate_custom_replay"
     contract["invariants"][0]["minimal_code_surface"] = (
         "`src/custom.py`, `tests/test_custom.py`"
@@ -231,6 +234,11 @@ def test_optional_fields_are_consumed_when_present(tmp_path: Path) -> None:
     assert "test_gate_custom_replay" in text
     assert "`src/custom.py`, `tests/test_custom.py`" in text
     assert "`trace_events` -> `agent5`" in text
+    assert "Claim summary: Deterministic replay contract summary." in text
+    assert "## Contract Constraints" in text
+    assert "- Python 3.11" in text
+    assert "## Contract Acceptance" in text
+    assert "- CLI emits JSONL" in text
 
 
 def test_optional_fields_absent_remain_backward_compatible(tmp_path: Path) -> None:

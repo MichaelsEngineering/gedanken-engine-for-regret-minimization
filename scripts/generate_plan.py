@@ -60,12 +60,15 @@ class Artifact:
 @dataclass(frozen=True)
 class ContractModel:
     primary_section_id: str
+    claim_summary: str | None
     invariants: list[Invariant]
     observables: list[Observable]
     admissibility_rule: str
     variables: list[Variable]
     assumptions: list[Assumption]
     artifacts: list[Artifact]
+    constraints: list[str]
+    acceptance: list[str]
 
 
 def _slug(text: str) -> str:
@@ -104,6 +107,43 @@ def _require_list(data: dict[str, Any], key: str, path: str) -> list[Any]:
     return value
 
 
+def _optional_non_empty_str(data: dict[str, Any], key: str, path: str) -> str | None:
+    value = data.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ValidationError(
+            code="TYPE_ERROR",
+            field_path=f"{path}.{key}",
+            message="Expected non-empty string when present.",
+        )
+    return value.strip()
+
+
+def _optional_non_empty_str_list(
+    data: dict[str, Any], key: str, path: str
+) -> list[str]:
+    value = data.get(key)
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValidationError(
+            code="TYPE_ERROR",
+            field_path=f"{path}.{key}",
+            message="Expected list of non-empty strings when present.",
+        )
+    normalized: list[str] = []
+    for idx, item in enumerate(value):
+        if not isinstance(item, str) or not item.strip():
+            raise ValidationError(
+                code="TYPE_ERROR",
+                field_path=f"{path}.{key}[{idx}]",
+                message="Expected non-empty string.",
+            )
+        normalized.append(item.strip())
+    return normalized
+
+
 def _validate_contract(payload: dict[str, Any], *, strict: bool) -> ContractModel:
     if not strict:
         raise ValidationError(
@@ -114,6 +154,7 @@ def _validate_contract(payload: dict[str, Any], *, strict: bool) -> ContractMode
 
     claim = _require_mapping(payload.get("claim"), "claim")
     primary_section_id = _require_non_empty_str(claim, "primary_section_id", "claim")
+    claim_summary = _optional_non_empty_str(claim, "summary", "claim")
 
     raw_invariants = _require_list(payload, "invariants", "")
     seen_invariants: set[str] = set()
@@ -246,12 +287,15 @@ def _validate_contract(payload: dict[str, Any], *, strict: bool) -> ContractMode
 
     return ContractModel(
         primary_section_id=primary_section_id,
+        claim_summary=claim_summary,
         invariants=invariants,
         observables=observables,
         admissibility_rule=admissibility_rule,
         variables=variables,
         assumptions=assumptions,
         artifacts=artifacts,
+        constraints=_optional_non_empty_str_list(payload, "constraints", "root"),
+        acceptance=_optional_non_empty_str_list(payload, "acceptance", "root"),
     )
 
 
@@ -434,10 +478,26 @@ def _render_plan(
         f"- Generated from `{contract_path.as_posix()}` with strict validation enabled."
     )
     lines.append(f"- Primary claim section: `{model.primary_section_id}`.")
+    if model.claim_summary:
+        lines.append(f"- Claim summary: {model.claim_summary}")
     lines.append(
         f"- Repository guardrails source: `{repo_guardrails_path.as_posix()}`."
     )
     lines.append("")
+
+    if model.constraints:
+        lines.append("## Contract Constraints")
+        lines.append("")
+        for constraint in model.constraints:
+            lines.append(f"- {constraint}")
+        lines.append("")
+
+    if model.acceptance:
+        lines.append("## Contract Acceptance")
+        lines.append("")
+        for acceptance_item in model.acceptance:
+            lines.append(f"- {acceptance_item}")
+        lines.append("")
 
     lines.append("## Invariant Extraction Table")
     lines.append("")

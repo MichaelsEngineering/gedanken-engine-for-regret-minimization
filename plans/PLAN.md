@@ -4,7 +4,22 @@
 - Post-approval authority is `plans/PLAN.md`; this file is operationally canonical for implementation and evaluation.
 - Generated from `plans/claim/definition-sec-001/core_claim.contract.yaml` with strict validation enabled.
 - Primary claim section: `SEC-001`.
+- Claim summary: Provide a deterministic replay runner (CLI + library) that replays a fixed trace with a declared seed or tape and produces a stable derived-state hash while streaming JSONL to stdout.
 - Repository guardrails source: `AGENTS.md`.
+
+## Contract Constraints
+
+- Python 3.11.
+- No new schema files under schemas/**.
+- Honor CODEOWNERS and manager-locked files.
+- Stop work at 5 minutes if not complete.
+
+## Contract Acceptance
+
+- CLI runs with declared inputs and prints JSONL replay stream to stdout.
+- Running the same replay twice yields the same derived-state hash.
+- Unit tests cover CLI wiring, deterministic replay, and step ordering.
+- make check passes.
 
 ## Invariant Extraction Table
 
