@@ -1,5 +1,24 @@
-# Runs: ignore all run artifacts but keep the demo fixture
+# Runs: ignore all run artifacts but keep canonical gate fixtures
 runs/*
+!runs/1/
+runs/1/*
+!runs/1/manager_tasks.yaml
+!runs/1/manager_verdict.yaml
+!runs/1/agent1/
+!runs/1/agent2/
+!runs/1/agent3/
+!runs/1/agent4/
+!runs/1/agent5/
+runs/1/agent1/*
+runs/1/agent2/*
+runs/1/agent3/*
+runs/1/agent4/*
+runs/1/agent5/*
+!runs/1/agent1/out.yaml
+!runs/1/agent2/out.yaml
+!runs/1/agent3/out.yaml
+!runs/1/agent4/out.yaml
+!runs/1/agent5/out.yaml
 !runs/demo/
 !runs/demo/**
 

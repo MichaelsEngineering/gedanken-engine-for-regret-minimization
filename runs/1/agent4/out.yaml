@@ -1,0 +1,8 @@
+contract_version: "1"
+status: "PASS"
+result:
+  summary: "ok"
+  diff_name_status: "M file.txt"
+  diff_patch: "diff --git a/file.txt b/file.txt\n"
+  test_files:
+    - "tests/test_example.py"
