@@ -113,15 +113,28 @@ def _report_payload(
 
 
 def _analyzer_input_from_events(events: list[dict[str, Any]]) -> dict[str, Any]:
+    admissibility_keys = (
+        "comparator_mode",
+        "uses_hidden_state",
+        "uses_future_info",
+    )
+
+    def _merge_input(source: Mapping[str, Any], metrics: list[Any]) -> dict[str, Any]:
+        payload: dict[str, Any] = {"metrics": metrics}
+        for key in admissibility_keys:
+            if key in source:
+                payload[key] = source[key]
+        return payload
+
     for event in reversed(events):
         metrics = event.get("metrics")
         if isinstance(metrics, list):
-            return {"metrics": metrics}
+            return _merge_input(event, metrics)
         analysis_input = event.get("analysis_input")
         if isinstance(analysis_input, Mapping):
             nested_metrics = analysis_input.get("metrics")
             if isinstance(nested_metrics, list):
-                return {"metrics": nested_metrics}
+                return _merge_input(analysis_input, nested_metrics)
     # Explicitly invalid when no metric data exists in the event stream.
     return {}
 

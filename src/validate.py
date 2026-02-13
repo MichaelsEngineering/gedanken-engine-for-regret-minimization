@@ -61,3 +61,31 @@ def validate_trace_header(
     if tape_expected and not _has_nonblank_str(first.get("tape_ref")):
         errors.append("TraceStarted.tape_ref is required when tape is requested.")
     return errors
+
+
+def validate_admissibility(record: Mapping[str, Any]) -> list[str]:
+    """Validate comparator admissibility inputs for offline attribution."""
+    errors: list[str] = []
+    comparator_mode = record.get("comparator_mode")
+    if comparator_mode is not None:
+        if not isinstance(comparator_mode, str):
+            errors.append("comparator_mode must be a string when provided.")
+        elif comparator_mode == "oracle":
+            errors.append("oracle comparator mode is inadmissible.")
+        elif comparator_mode != "admissible":
+            errors.append("comparator_mode must be 'admissible' or 'oracle'.")
+
+    uses_hidden_state = record.get("uses_hidden_state")
+    if uses_hidden_state is not None:
+        if not isinstance(uses_hidden_state, bool):
+            errors.append("uses_hidden_state must be a bool when provided.")
+        elif uses_hidden_state:
+            errors.append("comparator must not use hidden state.")
+
+    uses_future_info = record.get("uses_future_info")
+    if uses_future_info is not None:
+        if not isinstance(uses_future_info, bool):
+            errors.append("uses_future_info must be a bool when provided.")
+        elif uses_future_info:
+            errors.append("comparator must not use future information.")
+    return errors

@@ -1,0 +1,2 @@
+{"actions":{"agent1":{"agent_id":"agent1","obs":{"t":0},"t":0}},"cost":0,"kind":"STEP","reward":1,"seq":0,"state_hash_pre":"1111111111111111111111111111111111111111111111111111111111111111","t":0}
+{"analysis_input":{"comparator_mode":"admissible","uses_hidden_state":false,"uses_future_info":false,"metrics":[{"name":"latency","candidate_value":120.0,"comparator_value":100.0,"unit":"ms","scale_c_i":20.0,"weight":1.0}]},"kind":"ANALYZE_INPUT","seq":1}
