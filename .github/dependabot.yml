@@ -1,0 +1,51 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    assignees:
+      - "MichaelsEngineering"
+    reviewers:
+      - "MichaelsEngineering"
+    groups:
+      python-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      python-routine:
+        applies-to: version-updates
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:15"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    assignees:
+      - "MichaelsEngineering"
+    reviewers:
+      - "MichaelsEngineering"
+    groups:
+      actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+      actions-routine:
+        applies-to: version-updates
+        patterns:
+          - "*"

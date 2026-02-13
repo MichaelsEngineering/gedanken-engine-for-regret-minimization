@@ -1,0 +1,12 @@
+scope	declared_in_pyproject	locked_in_uv_lock	evidence	status	note
+runtime	pydantic>=2.6	pydantic==2.12.5	pyproject.toml [project.dependencies], uv.lock name/version rows	PASS	Direct runtime dependency present in lockfile with resolved version and hashed artifacts.
+runtime	pyyaml>=6.0	pyyaml==6.0.3	pyproject.toml [project.dependencies], uv.lock name/version rows	PASS	Direct runtime dependency present in lockfile with resolved version and hashed artifacts.
+runtime	rich>=13.7	rich==14.3.1	pyproject.toml [project.dependencies], uv.lock name/version rows	PASS	Direct runtime dependency present in lockfile with resolved version and hashed artifacts.
+dev	mypy>=1.10	mypy==1.19.1	pyproject.toml [dependency-groups.dev], uv.lock name/version rows	PASS	Dev dependency resolved in lockfile.
+dev	pytest>=8.2	pytest==9.0.2	pyproject.toml [dependency-groups.dev], uv.lock name/version rows	PASS	Dev dependency resolved in lockfile.
+dev	pytest-cov>=5.0	pytest-cov==7.0.0	pyproject.toml [dependency-groups.dev], uv.lock name/version rows	PASS	Dev dependency resolved in lockfile.
+dev	ruff>=0.6	ruff==0.14.14	pyproject.toml [dependency-groups.dev], uv.lock name/version rows	PASS	Dev dependency resolved in lockfile.
+dev	types-PyYAML>=6.0	types-pyyaml==6.0.12.20250915	pyproject.toml [dependency-groups.dev], uv.lock name/version rows	PASS	Dev dependency resolved in lockfile.
+lockfile	N/A	25 packages total; 24 registry + 1 editable	uv.lock package count and source fields	PASS	Lockfile fully materialized for current dependency set.
+registry	N/A	registry source=https://pypi.org/simple	uv.lock source entries	PASS	Single public registry source configured in lockfile.
+policy	Minimum-version specifiers (>=) in pyproject	Pinned exact versions in uv.lock	pyproject.toml + uv.lock	RISK	Policy permits broad version drift at declaration layer; reproducibility depends on lockfile discipline.
