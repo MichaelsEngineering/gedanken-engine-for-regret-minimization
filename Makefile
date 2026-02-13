@@ -3,10 +3,11 @@ PYTHON := python
 PKG ?= src
 TESTS ?= tests
 SMOKE_CFG ?= configs/modular_addition.yaml
+SBOM_OUT ?= runs/security/sbom.cdx.json
 SYNC_DELETE_REMOTE ?= 0
 
 # ==== Meta ====
-.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate replay analyze swarm smoke train unit integration new-test clean sync
+.PHONY: help default init lint type format format-check test test-fast test-watch coverage tdd check gate replay analyze swarm smoke train unit integration new-test security-audit sbom clean sync
 
 default: help
 
@@ -30,6 +31,8 @@ help:
 	@echo "   train           Example short train call (override ARGS=...)"
 	@echo "   unit            Only unit tests (mark=unit)"
 	@echo "   integration     Only integration tests (mark=integration)"
+	@echo "   security-audit  Run dependency vulnerability audit"
+	@echo "   sbom            Generate CycloneDX SBOM at $(SBOM_OUT)"
 	@echo "   new-test NAME=feature  Scaffold tests/test_feature.py"
 	@echo "   clean           Remove caches and build artifacts"
 
@@ -120,6 +123,13 @@ integration:
 
 analytic:
 	pytest -k "norm_min_dynamics" -v
+
+security-audit:
+	uv run --with pip-audit pip-audit --strict
+
+sbom:
+	@mkdir -p $(dir $(SBOM_OUT))
+	uv run --with cyclonedx-bom cyclonedx-py environment --output-format json --output-file $(SBOM_OUT)
 
 # ==== Scaffolding ====
 # Create a basic unit test file: make new-test NAME=feature_x

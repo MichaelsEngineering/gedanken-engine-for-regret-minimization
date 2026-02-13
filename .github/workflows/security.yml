@@ -1,0 +1,100 @@
+name: security
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "21 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: codeql
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@cdb41dee6f188f7c3366757a8dab4d006f37cf64
+        with:
+          languages: python
+      - name: Analyze with CodeQL
+        uses: github/codeql-action/analyze@cdb41dee6f188f7c3366757a8dab4d006f37cf64
+
+  dependency-audit:
+    name: dependency-audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - name: Setup Python 3.11
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: python -m pip install --upgrade pip uv
+      - name: Sync dependencies
+        run: uv sync --dev
+      - name: Run dependency audit
+        run: make security-audit
+
+  sbom:
+    name: sbom
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - name: Setup Python 3.11
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: python -m pip install --upgrade pip uv
+      - name: Sync dependencies
+        run: uv sync --dev
+      - name: Generate SBOM
+        run: make sbom
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+        with:
+          name: cyclonedx-sbom
+          path: runs/security/sbom.cdx.json
+          if-no-files-found: error
+
+  attest:
+    name: attest
+    runs-on: ubuntu-latest
+    needs:
+      - sbom
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - name: Setup Python 3.11
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: python -m pip install --upgrade pip uv
+      - name: Sync dependencies
+        run: uv sync --dev
+      - name: Generate SBOM for attestation subject
+        run: make sbom
+      - name: Attest SBOM provenance
+        uses: actions/attest-build-provenance@d8d4d3fda60cd25f7de5fef3157215f40ed8e8d5
+        with:
+          subject-path: runs/security/sbom.cdx.json

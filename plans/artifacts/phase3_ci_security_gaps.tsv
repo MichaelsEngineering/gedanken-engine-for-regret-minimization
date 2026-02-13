@@ -1,0 +1,6 @@
+gap_id	control_area	observed_state	evidence	severity	recommended_action
+CI-001	Workflow automation	.github/workflows exists but has 0 workflow files	find .github/workflows -type f | wc -l => 0	HIGH	Add required CI workflows for make check, make gate, and smoke on PR and protected branches.
+CI-002	Dependency update automation	No Dependabot config	missing .github/dependabot.yml	MEDIUM	Add Dependabot (or Renovate) for pip/uv lock updates with review policy.
+CI-003	Security scanning automation	No CI references to codeql, pip-audit/safety, secret scanning, SBOM, or attestations	rg over .github/Makefile/pyproject/scripts/dev returned no matches	HIGH	Add security workflow: SAST + dependency audit + secret scan + SBOM generation and signed attestations.
+CI-004	Branch protection enforcement evidence	No workflow status checks can be required without workflows	combined from CI-001 and repo state	HIGH	Define required status checks tied to workflows before merge.
+CI-005	PR quality gate completeness	PR template only enforces local make check checkbox	.github/pull_request_template.md	LOW	Add mandatory sections for threat model delta, dependency changes, and rollback notes.

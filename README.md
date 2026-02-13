@@ -50,35 +50,6 @@ traces/
 - Planned state: broader trace datasets (`canonical`, `golden`, `evals`) as the offline analyzer pipeline is implemented.
 - Invariance rule: workload traces are frozen across alternatives unless explicitly modeled inside the system.
 
-## Executable workflow: regret minimization as a thought experiment
-
-This repository is intended to be reviewed as an executable thought experiment.
-
-Workflow contract:
-
-- Input: `theory/theory.pdf`
-- Assumptions: frozen workload trace, fixed seed, fixed spec
-- Output: regret metrics computed against admissible baselines under identical boundary conditions
-
-Typical workflow:
-
-1. Read `theory/theory.pdf` to identify explicit invariants and admissibility constraints.
-2. Inspect `plans/` to see how the swarm decomposed the theory into owned tasks.
-3. Review `plans/PLAN.md` and `scripts/agent-orchestrator/` to confirm evaluation rules and lane contracts are fully specified.
-4. Run tests to see where the theory is falsified, upheld, or shown to be underspecified.
-
-5. Inspect `src/` only after tests, to verify minimal compliance rather than feature scope.
-
-## Why this repository exists (engineering motivation)
-
-This repo demonstrates:
-
-- Input a novel theoretical claim (thought experiment) into the theory folder and obtain concrete tests and minimal src code that can be executed.
-
-- A simple framework for multi-agent work that is constrained to remain deterministic and reviewable.
-
-- Moving regret minimization out of an academic “narrative” space and into the engineering stack.
-
 ## How to run (engineering quick start)
 
 Prereqs: Python 3.11 and `codex` on PATH for swarm runs.
@@ -108,21 +79,49 @@ Expected outputs at a high level:
 - `make replay` writes replay events to `runs/<id>/events.jsonl`.
 - `make analyze` emits a regret report at `runs/<id>/report.json`.
 
-## Verification checklist (definition of correctness)
+## Architecture and verification
 
-- [ ] Re-run with identical spec, seed, and trace produces identical derived-state hashes.
-- [ ] Trace files are immutable and identical across all alternatives.
-- [ ] Comparator uses only $A_{adm}$ and excludes hidden state or future RNG outcomes.
-- [ ] Every metric has an explicit $C_i(s)$ and aggregate regret is dimensionless.
-- [ ] Changing units (ms to s) does not change dimensionless regret.
-- [ ] Causal closure holds and boundary conditions reset between alternatives.
-- [ ] Trace divergence triggers a hard failure.
-- [ ] Measurement occurs offline with no online learning during execution.
-- [ ] Regret is computed against the best admissible alternative, not clairvoyant baselines.
-- [ ] Audit trail is reproducible from spec, seed, and trace alone.
+- Architecture contract: `docs/ARCHITECTURE.md`
+- Verification commands:
+
+```bash
+make check
+make gate
+make smoke
+```
+
+- Diagram assets in `docs/diagram/` are informational and not gate-relevant.
+
+## CI and Security
+
+The repository uses GitHub-native CI and security automation to enforce deterministic quality gates and supply-chain controls.
+
+Required workflow checks for protected branches:
+
+- `ci / check` (runs `make check`)
+- `ci / gate` (runs `make gate`)
+- `ci / smoke` (runs `make smoke`)
+- `security / codeql`
+- `security / dependency-audit`
+- `security / sbom`
+- `security / attest`
+
+Dependency automation policy:
+
+- Dependabot runs weekly for `pip` and `github-actions`.
+- Dependency pull requests are labeled `dependencies` and `security`.
+- Security updates are grouped separately from routine updates.
+
+PR security checklist policy:
+
+- PR authors must complete the security/supply-chain checklist in `.github/pull_request_template.md`.
+- Required PR notes include security impact, dependency/lockfile changes, threat-model delta, and rollback plan.
+
+Branch protection settings are configured in the GitHub UI (not versioned in this repo). For `main`, enforce required status checks and review requirements in line with `AGENTS.md` guardrails.
 
 ## References
 
+- `docs/ARCHITECTURE.md`
 - `theory/theory.pdf`
 
 ## License
