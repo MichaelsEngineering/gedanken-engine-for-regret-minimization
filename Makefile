@@ -125,7 +125,10 @@ analytic:
 	pytest -k "norm_min_dynamics" -v
 
 security-audit:
-	uv run --with pip-audit pip-audit --strict
+	@tmp="$$(mktemp)"; \
+	uv export --frozen --format requirements.txt --all-groups --no-emit-project --no-hashes --output-file "$$tmp"; \
+	uv run --with pip-audit pip-audit --strict -r "$$tmp"; \
+	rm -f "$$tmp"
 
 sbom:
 	@mkdir -p $(dir $(SBOM_OUT))

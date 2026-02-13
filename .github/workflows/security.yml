@@ -21,12 +21,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      # TODO(security-hardening): repin to verified immutable SHAs once refs are validated.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@cdb41dee6f188f7c3366757a8dab4d006f37cf64
+        uses: github/codeql-action/init@v3
         with:
           languages: python
       - name: Analyze with CodeQL
-        uses: github/codeql-action/analyze@cdb41dee6f188f7c3366757a8dab4d006f37cf64
+        uses: github/codeql-action/analyze@v3
 
   dependency-audit:
     name: dependency-audit
@@ -94,7 +95,8 @@ jobs:
         run: uv sync --dev
       - name: Generate SBOM for attestation subject
         run: uv run make sbom
+      # TODO(security-hardening): repin to verified immutable SHAs once refs are validated.
       - name: Attest SBOM provenance
-        uses: actions/attest-build-provenance@d8d4d3fda60cd25f7de5fef3157215f40ed8e8d5
+        uses: actions/attest-build-provenance@v1
         with:
           subject-path: runs/security/sbom.cdx.json
