@@ -19,6 +19,10 @@ runs/1/agent5/*
 !runs/1/agent3/out.yaml
 !runs/1/agent4/out.yaml
 !runs/1/agent5/out.yaml
+!runs/2/
+runs/2/*
+!runs/2/events.jsonl
+!runs/2/report.json
 !runs/demo/
 !runs/demo/**
 

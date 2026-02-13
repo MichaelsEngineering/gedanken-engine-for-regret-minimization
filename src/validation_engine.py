@@ -7,6 +7,7 @@ from typing import Any
 
 from src.metrics import deterministic_metric
 from src.scalarization import aggregate_dimensionless_regret
+from src.validate import validate_admissibility
 
 
 def _invalid_result(
@@ -24,6 +25,14 @@ def _invalid_result(
 
 def analyze(state: Mapping[str, Any]) -> dict[str, Any]:
     """Analyze metric records and compute dimensionless aggregate regret."""
+    if any(
+        key in state
+        for key in ("comparator_mode", "uses_hidden_state", "uses_future_info")
+    ):
+        admissibility_errors = validate_admissibility(state)
+        if admissibility_errors:
+            return _invalid_result(admissibility_errors)
+
     metrics_obj = state.get("metrics")
     if not isinstance(metrics_obj, list):
         return _invalid_result(["metrics list is required"])

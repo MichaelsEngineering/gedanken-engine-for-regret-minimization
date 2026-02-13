@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from src.validate import validate_replay_config, validate_trace_header
+from src.validate import (
+    validate_admissibility,
+    validate_replay_config,
+    validate_trace_header,
+)
 
 
 def test_validate_trace_header_missing_trace_started() -> None:
@@ -44,3 +48,40 @@ def test_validate_trace_header_rejects_blank_tape_ref_when_requested() -> None:
     events = [{"kind": "TRACE_STARTED", "seed": 42, "tape_ref": "  "}]
     errors = validate_trace_header(events, tape_expected=True)
     assert any("tape_ref" in error for error in errors)
+
+
+def test_validate_admissibility_rejects_oracle_mode() -> None:
+    errors = validate_admissibility({"comparator_mode": "oracle"})
+    assert any("inadmissible" in error for error in errors)
+
+
+def test_validate_admissibility_rejects_hidden_and_future_info() -> None:
+    errors = validate_admissibility(
+        {"uses_hidden_state": True, "uses_future_info": True}
+    )
+    assert any("hidden state" in error for error in errors)
+    assert any("future information" in error for error in errors)
+
+
+def test_validate_admissibility_rejects_invalid_types() -> None:
+    errors = validate_admissibility(
+        {
+            "comparator_mode": 1,
+            "uses_hidden_state": "yes",
+            "uses_future_info": "no",
+        }
+    )
+    assert any("comparator_mode must be a string" in error for error in errors)
+    assert any("uses_hidden_state must be a bool" in error for error in errors)
+    assert any("uses_future_info must be a bool" in error for error in errors)
+
+
+def test_validate_admissibility_accepts_admissible_record() -> None:
+    errors = validate_admissibility(
+        {
+            "comparator_mode": "admissible",
+            "uses_hidden_state": False,
+            "uses_future_info": False,
+        }
+    )
+    assert errors == []

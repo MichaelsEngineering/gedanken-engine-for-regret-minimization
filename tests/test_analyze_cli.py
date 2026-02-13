@@ -96,3 +96,24 @@ def test_analyze_no_metric_dataset_emits_invalid_summary(tmp_path: Path) -> None
     assert summary["valid"] is False
     assert summary["aggregate_regret"] is None
     assert any("metrics list is required" in error for error in summary["errors"])
+
+
+def test_analyze_oracle_comparator_hard_fails(tmp_path: Path) -> None:
+    events_path = tmp_path / "events.jsonl"
+    events_path.write_text(
+        '{"kind":"STEP","seq":0}\n'
+        '{"analysis_input":{"comparator_mode":"oracle","uses_hidden_state":false,"uses_future_info":false,"metrics":[{"name":"latency","candidate_value":120.0,"comparator_value":100.0,"unit":"ms","scale_c_i":20.0,"weight":1.0}]},"kind":"ANALYZE_INPUT","seq":1}\n',
+        encoding="utf-8",
+    )
+    report_path = tmp_path / "report.json"
+
+    exit_code = analyze.main(["--in", str(events_path), "--out", str(report_path)])
+
+    assert exit_code == 0
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    summary = payload["analysis"]["scalar_summary"]
+    assert summary["valid"] is False
+    assert summary["aggregate_regret"] is None
+    assert any(
+        "oracle comparator mode is inadmissible" in error for error in summary["errors"]
+    )
