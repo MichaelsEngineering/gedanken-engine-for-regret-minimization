@@ -45,7 +45,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Run dependency audit
-        run: make security-audit
+        run: uv run make security-audit
 
   sbom:
     name: sbom
@@ -64,7 +64,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Generate SBOM
-        run: make sbom
+        run: uv run make sbom
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
         with:
@@ -93,7 +93,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Generate SBOM for attestation subject
-        run: make sbom
+        run: uv run make sbom
       - name: Attest SBOM provenance
         uses: actions/attest-build-provenance@d8d4d3fda60cd25f7de5fef3157215f40ed8e8d5
         with:
