@@ -10,8 +10,6 @@ Authority chain:
 - Post-approval authority: `plans/PLAN.md` is the sole operational authority for implementation and evaluation.
 - After explicit approval of `plans/PLAN.md`, implementation and testing must not re-interpret `theory/theory.pdf`.
 
-Diagram assets under `docs/diagram/` are informational only and are not gate-relevant.
-
 ## System Data Flow
 
 The execution and analysis pipeline is deterministic and stage-based:

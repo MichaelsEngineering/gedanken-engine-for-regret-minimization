@@ -397,7 +397,7 @@ git push -u origin HEAD
 ## 6. Coding Standard
 
 - Typing: mypy-clean public APIs, explicit return types.
-- Style: black, ruff.
+- Style: Ruff-based linting and formatting (`ruff check`, `ruff format`).
 - Tests: pytest unit tests for new functions and bug fixes.
 - Docs: docstring for every public function.
 - Config: do not break existing configs. Add new ones as opt-in.
@@ -411,6 +411,22 @@ git push -u origin HEAD
 ```bash
 uv sync --dev
 make check
+```
+
+### Feature visibility path (2026 onboarding)
+
+Use this sequence to verify deterministic replay and offline analysis artifacts:
+
+```bash
+make replay RUN_ID=1 TRACE=traces/fixtures/fixture_five_agent.jsonl SEED=7
+make analyze RUN_ID=1 ANALYZE_IN=runs/1/events.jsonl ANALYZE_OUT=runs/1/report.json
+make gate GATE_RUN=runs/1
+```
+
+If execution paths change, also run:
+
+```bash
+make smoke
 ```
 
 ### Experiment smoke test
@@ -441,6 +457,7 @@ make check
 - `traces/fixtures/*.jsonl` (committed deterministic fixture traces)
 - `traces/fixtures/manifest.sha256` (pinned fixture integrity manifest)
 - `runs/<run_id>/events.jsonl` (runtime replay output when `--tee` is used)
+- `runs/<run_id>/report.json` (offline analyzer report bound to a specific events file hash)
 - `runs/run-<id>-manager.jsonl`, `runs/run-<id>-agent*.jsonl`, `runs/run-<id>-swarm.jsonl` (swarm logs)
 
 ### Planned trace locations (future-state targets, not yet default)
@@ -452,10 +469,23 @@ make check
 
 ### Event schema rules
 
-- JSONL, one DomainEvent per line (append-only).
-- Required keys: `kind`, `trace_id`, `seq`, `ts`, `meta`, plus event-specific fields.
-- `seq` strictly increases within a file.
-- No in-place edits. If you need compaction, generate a new file and keep the original.
+Fixture trace schema (`traces/fixtures/*.jsonl`):
+
+- JSONL DomainEvent objects, one per line, append-only.
+- Required baseline keys: `kind`, `trace_id`, `seq`, `ts`, `meta` (plus event-specific fields).
+- `seq` strictly increases within each trace file.
+
+Replay event stream schema (`runs/<run_id>/events.jsonl`):
+
+- JSONL objects, append-only per run.
+- Every event includes `kind`.
+- `STEP` events include `seq`, `t`, `state_hash_pre`, `actions`, `reward`, `cost`.
+- Ordering must be deterministic with monotonic non-duplicate `seq`.
+
+Swarm log schema (`runs/run-<id>-*.jsonl`):
+
+- JSONL append-only log events emitted by manager/workers/swarm merger.
+- No in-place edits; regenerate in a new file if compaction is required.
 
 ### Why JSONL
 
@@ -465,11 +495,17 @@ make check
 
 ## 9. Config and Backend Guidance
 
-- TODO
+- Replay boundary tuple is authoritative: approved `plans/PLAN.md`, frozen trace, and exactly one deterministic driver input (`seed` or `tape`).
+- Enforce `seed|tape` exclusivity; reject configs that declare both or neither.
+- Comparator and admissibility configuration must exclude hidden/private state and future information.
+- Backend execution remains deterministic: no wall-clock dependencies, unseeded randomness, or network I/O in replay/evaluation paths.
 
 ## 10. Logging and Metrics
 
-- TODO
+- Error handling must emit deterministic JSON payloads and non-zero exit status on hard-fail paths.
+- Replay/analyzer event ordering must be deterministic and represented by monotonic, non-duplicate `seq` values where present.
+- Analyzer outputs must include hash linkage to inputs via `source_events_sha256`.
+- Offline metrics and scalarization are post-execution only and must not mutate execution outcomes.
 
 ---
 
