@@ -25,7 +25,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Run check
-        run: make check
+        run: uv run make check
 
   gate:
     name: gate
@@ -42,7 +42,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Run deterministic gate
-        run: make gate
+        run: uv run make gate
 
   smoke:
     name: smoke
@@ -59,4 +59,4 @@ jobs:
       - name: Sync dependencies
         run: uv sync --dev
       - name: Run smoke test
-        run: make smoke
+        run: uv run make smoke
