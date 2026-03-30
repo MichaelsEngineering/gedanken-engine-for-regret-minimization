@@ -67,7 +67,7 @@ jobs:
       - name: Generate SBOM
         run: uv run make sbom
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: cyclonedx-sbom
           path: runs/security/sbom.cdx.json
@@ -97,6 +97,6 @@ jobs:
         run: uv run make sbom
       # TODO(security-hardening): repin to verified immutable SHAs once refs are validated.
       - name: Attest SBOM provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: runs/security/sbom.cdx.json
