@@ -1,12 +1,12 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=82.0.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gedanken-engine-for-regret-minimization"
 version = "0.2.0"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.6", "pyyaml>=6.0", "rich>=13.7"]
+dependencies = ["pydantic>=2.12.5", "pyyaml>=6.0.3", "rich>=15.0.0"]
 
 [project.scripts]
 rc = "src.replay:main"
@@ -20,11 +20,11 @@ package = true
 
 [dependency-groups]
 dev = [
-    "mypy>=1.10",
-    "pytest>=8.2",
-    "pytest-cov>=5.0",
-    "ruff>=0.6",
-    "types-PyYAML>=6.0",
+    "mypy>=1.20.1",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.10",
+    "types-PyYAML>=6.0.12.20260408",
 ]
 
 [tool.pytest.ini_options]
