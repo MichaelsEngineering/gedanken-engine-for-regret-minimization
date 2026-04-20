@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "gedanken-engine-for-regret-minimization"
 version = "0.2.0"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.12.5", "pyyaml>=6.0.3", "rich>=15.0.0"]
+dependencies = ["pydantic>=2.13.2", "pyyaml>=6.0.3", "rich>=15.0.0"]
 
 [project.scripts]
 rc = "src.replay:main"
@@ -23,7 +23,7 @@ dev = [
     "mypy>=1.20.1",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
-    "ruff>=0.15.10",
+    "ruff>=0.15.11",
     "types-PyYAML>=6.0.12.20260408",
 ]
 
